@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CurrentWeather" representedClassName="CurrentWeather" syncable="YES" codeGenerationType="class">
+        <attribute name="temperature" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="type" attributeType="String" syncable="YES"/>
+        <relationship name="location" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="currentWeather" inverseEntity="Location" syncable="YES"/>
+    </entity>
+    <entity name="ForecastWeather" representedClassName="ForecastWeather" syncable="YES" codeGenerationType="class">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="highTemp" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="lowTemp" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="type" attributeType="String" syncable="YES"/>
+        <relationship name="location" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="forecastWeather" inverseEntity="Location" syncable="YES"/>
+    </entity>
+    <entity name="Location" representedClassName="Location" syncable="YES" codeGenerationType="class">
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CurrentWeather" inverseName="location" inverseEntity="CurrentWeather" syncable="YES"/>
+        <relationship name="forecastWeather" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ForecastWeather" inverseName="location" inverseEntity="ForecastWeather" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CurrentWeather" positionX="-54" positionY="18" width="128" height="90"/>
+        <element name="ForecastWeather" positionX="-36" positionY="45" width="128" height="120"/>
+        <element name="Location" positionX="-63" positionY="-18" width="128" height="120"/>
+    </elements>
 </model>
