@@ -16,7 +16,6 @@ extension Location {
     
 }
 
-
 extension Double {
     func KelvinToFarenheit() -> Double {
         return (self * (9/5) - 459.67).rounded()

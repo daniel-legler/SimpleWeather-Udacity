@@ -11,6 +11,7 @@
 		74B6E8A01F3D59D400F46B10 /* ForecastWeatherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6E89F1F3D59D400F46B10 /* ForecastWeatherExtensions.swift */; };
 		74B6E8A21F3D59E000F46B10 /* CurrentWeatherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6E8A11F3D59E000F46B10 /* CurrentWeatherExtensions.swift */; };
 		74B6E8A81F3D765B00F46B10 /* WeatherCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6E8A71F3D765B00F46B10 /* WeatherCollectionVC.swift */; };
+		74B6E8AA1F3D786000F46B10 /* WeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B6E8A91F3D786000F46B10 /* WeatherCell.swift */; };
 		74CD43321F3ACA5F004BD368 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CD43311F3ACA5F004BD368 /* AppDelegate.swift */; };
 		74CD43371F3ACA5F004BD368 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74CD43351F3ACA5F004BD368 /* Main.storyboard */; };
 		74CD433A1F3ACA5F004BD368 /* SimpleWeather_.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 74CD43381F3ACA5F004BD368 /* SimpleWeather_.xcdatamodeld */; };
@@ -27,6 +28,7 @@
 		74B6E89F1F3D59D400F46B10 /* ForecastWeatherExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForecastWeatherExtensions.swift; sourceTree = "<group>"; };
 		74B6E8A11F3D59E000F46B10 /* CurrentWeatherExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWeatherExtensions.swift; sourceTree = "<group>"; };
 		74B6E8A71F3D765B00F46B10 /* WeatherCollectionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherCollectionVC.swift; sourceTree = "<group>"; };
+		74B6E8A91F3D786000F46B10 /* WeatherCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherCell.swift; sourceTree = "<group>"; };
 		74CD432E1F3ACA5F004BD368 /* SimpleWeather!.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SimpleWeather!.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		74CD43311F3ACA5F004BD368 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		74CD43361F3ACA5F004BD368 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 		74CD43491F3ACD60004BD368 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				74B6E8A91F3D786000F46B10 /* WeatherCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -198,6 +201,7 @@
 				74CD434C1F3ACDCB004BD368 /* CoreDataManager.swift in Sources */,
 				74CD43521F3B5F94004BD368 /* LibraryApi.swift in Sources */,
 				74CD434E1F3ACDE2004BD368 /* WeatherApiManager.swift in Sources */,
+				74B6E8AA1F3D786000F46B10 /* WeatherCell.swift in Sources */,
 				74B6E8A81F3D765B00F46B10 /* WeatherCollectionVC.swift in Sources */,
 				74CD43321F3ACA5F004BD368 /* AppDelegate.swift in Sources */,
 				74B6E8A01F3D59D400F46B10 /* ForecastWeatherExtensions.swift in Sources */,
