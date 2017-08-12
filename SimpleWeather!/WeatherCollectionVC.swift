@@ -9,21 +9,45 @@
 import UIKit
 
 
-class WeatherCollectionVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class WeatherCollectionVC: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var addCityButton: UIBarButtonItem!
     
-    var locations: [Location] = []
+//    var locations: [Location] = []
+    var locations = [LocationModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        refreshWeather()
 
-        
-        
     }
+
+    @IBAction func addCityButtonPressed(_ sender: Any) {
+        performSegue(withIdentifier: "CitySearch", sender: nil)
+    }
+    
+    @IBAction func newCityAdded(segue: UIStoryboardSegue) {
+        Loading.shared.show(view)
+    }
+    
+    func refreshWeather() {
+        
+        locations = Library.shared.loadStoredWeather()
+        
+        collectionView.reloadData()
+        
+        Loading.shared.hide()
+
+    }
+    
+    
+}
+
+
+extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -33,7 +57,7 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegate, UICollect
         
         cell.cityName.text = locations[indexPath.row].name ?? "Somewhere"
         
-        let weatherType = locations[indexPath.row].currentWeather?.type ?? "Unkown"
+        let weatherType = locations[indexPath.row].current?.type ?? "Unkown"
         
         cell.weatherIcon.image = UIImage(named: weatherType)
         
@@ -57,10 +81,6 @@ class WeatherCollectionVC: UIViewController, UICollectionViewDelegate, UICollect
         let dimension: CGFloat = (UIScreen.main.bounds.width - (2 * space)) / 2.0
         return CGSize(width: dimension, height: dimension + 20)
     }
-}
-
-extension WeatherCollectionVC: UISearchControllerDelegate {
-    
 }
 
 

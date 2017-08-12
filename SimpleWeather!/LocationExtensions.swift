@@ -10,8 +10,12 @@ import Foundation
 import CoreLocation
 
 extension Location {
-    func coordinate() -> CLLocationCoordinate2D {
+    func getCoordinate() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
+    }
+    func setCoordinate(coord: CLLocationCoordinate2D) {
+        self.latitude = coord.latitude
+        self.longitude = coord.longitude
     }
     
 }

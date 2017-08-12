@@ -8,8 +8,6 @@
 
 import Foundation
 
-typealias WAM = WeatherApiManager
-
 enum WeatherType: String {
     case Clear = "Clear"
     case Cloudy = "Cloudy"
@@ -22,8 +20,9 @@ enum WeatherType: String {
 }
 
 enum WeatherApiResponse {
-    case CurrentWeather(CurrentWeather)
-    case ForecastWeather(ForecastWeather)
+    case Location(LocationModel) // For returning final weather location object
+    case CurrentWeather(CurrentWeatherModel)
+    case ForecastWeather([ForecastWeatherModel])
     case Error(WeatherApiError)
 }
 
@@ -34,9 +33,6 @@ enum WeatherApiError: String {
 }
 
 class WeatherApiManager {
-    
-    private init() {}
-    static let shared = WAM()
     
     private func forecastUrl(_ lat: Double, _ lon: Double) -> URL? {
 
@@ -67,7 +63,41 @@ class WeatherApiManager {
         }
     }
     
-    func downloadCurrentWeather(lat: Double, lon: Double, completion: @escaping (WeatherApiResponse)->() ) {
+    func downloadWeather(lat: Double, lon: Double, completion: @escaping(WeatherApiResponse)->()) {
+        
+        var location = LocationModel()
+        
+        downloadCurrentWeather(lat: lat, lon: lon) { (response: WeatherApiResponse) in
+            
+            switch (response) {
+            case .CurrentWeather(let current):
+                location.current = current
+            case .Error(let error):
+                completion(.Error(error))
+                print(error.rawValue)
+            case .ForecastWeather(_), .Location(_):
+                break
+            }
+            
+            self.downloadWeatherForecast(lat: lat, lon: lon, completion: { (response: WeatherApiResponse) in
+                
+                switch (response) {
+                case .ForecastWeather(let forecast):
+                    location.forecast = forecast
+                case .Error(let error):
+                    completion(.Error(error))
+                    print(error.rawValue)
+                case .CurrentWeather(_), .Location(_):
+                    break
+                }
+                
+                completion(.Location(location))
+
+            })
+        }
+    }
+    
+    private func downloadCurrentWeather(lat: Double, lon: Double, completion: @escaping (WeatherApiResponse)->() ) {
 
         guard let url = currentWeatherUrl(lat, lon) else {
             completion(.Error(.InvalidCoordinates))
@@ -87,7 +117,7 @@ class WeatherApiManager {
                 return
             }
             
-            let currentWeather = CurrentWeather()
+            var currentWeather = CurrentWeatherModel()
             
             // JSON Parsing to get current weather type
             guard let weather = parsedData["weather"] as? [[String:Any]] else { completion(.Error(.JsonError)); return }
@@ -98,16 +128,16 @@ class WeatherApiManager {
             // JSON Parsing to get current temperature
             guard let temperatureInfo = parsedData["main"] as? [String:Any] else { print("parsedData[\"main\"]"); completion(.Error(.JsonError)); return }
             guard let currentTemp = temperatureInfo["temp"] as? Double else { print("temperatureInfo[\"temp\"]"); completion(.Error(.JsonError)); return }
-            currentWeather.temperature = currentTemp.KelvinToFarenheit()
+            currentWeather.temp = currentTemp.KelvinToFarenheit()
             
             completion(.CurrentWeather(currentWeather))
-                        
+            
             
         }.resume()
         
     }
     
-    func downloadWeatherForecast(lat: Double, lon: Double, completion: @escaping (WeatherApiResponse)->() ) {
+    private func downloadWeatherForecast(lat: Double, lon: Double, completion: @escaping (WeatherApiResponse)->() ) {
         
         guard let url = forecastUrl(lat, lon) else {
             completion(.Error(.InvalidCoordinates))
@@ -127,11 +157,13 @@ class WeatherApiManager {
                 return
             }
             
-            let forecast = ForecastWeather()
+            var forecasts = [ForecastWeatherModel]()
 
             guard let allForecasts = parsedData["list"] as? [[String:Any]] else { completion(.Error(.JsonError)); return }
             
             for item in allForecasts {
+                
+                var forecast = ForecastWeatherModel()
                 
                 // JSON Parsing to get forecast high and low
                 guard let temperatureInfo = item["temp"] as? [String:Any] else { print("item[\"temp\"]"); completion(.Error(.JsonError)); return }
@@ -148,13 +180,13 @@ class WeatherApiManager {
 
                 // JSON Parsing to get date of this forecast
                 guard let date = item["dt"] as? Double else { print("item[\"dt\"]"); completion(.Error(.JsonError)); return }
-                let unix_conv_date = Date(timeIntervalSince1970: date)
-                forecast.date = unix_conv_date as NSDate
+                forecast.date = Date(timeIntervalSince1970: date)
                 
-                completion(.ForecastWeather(forecast))
+                forecasts.append(forecast)
                 
             }
-
+            
+            completion(.ForecastWeather(forecasts))
             
             }.resume()
     

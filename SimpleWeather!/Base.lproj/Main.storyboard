@@ -38,15 +38,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" placeholder="Search for a city" translatesAutoresizingMaskIntoConstraints="NO" id="ODq-sQ-1zQ">
-                                <rect key="frame" x="0.0" y="64" width="375" height="44"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="words" spellCheckingType="yes" returnKeyType="done"/>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="gpg-Za-9yE"/>
-                                </connections>
-                            </searchBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="4g4-lh-8hF">
-                                <rect key="frame" x="0.0" y="108" width="375" height="559"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="4xS-8Q-7Ye">
                                     <size key="itemSize" width="182" height="181"/>
@@ -106,23 +99,25 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="ODq-sQ-1zQ" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="9xh-Bw-pGo"/>
-                            <constraint firstAttribute="trailing" secondItem="4g4-lh-8hF" secondAttribute="trailing" id="LEm-6b-YRg"/>
-                            <constraint firstItem="4g4-lh-8hF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ter-S4-Gg5"/>
-                            <constraint firstAttribute="trailing" secondItem="ODq-sQ-1zQ" secondAttribute="trailing" id="XS7-a7-GbF"/>
-                            <constraint firstItem="4g4-lh-8hF" firstAttribute="top" secondItem="ODq-sQ-1zQ" secondAttribute="bottom" id="dPq-0X-G9n"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="4g4-lh-8hF" secondAttribute="bottom" id="hQc-pC-BIf"/>
-                            <constraint firstItem="ODq-sQ-1zQ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="lTX-7C-flY"/>
+                            <constraint firstItem="4g4-lh-8hF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="NhS-lQ-HP9"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="4g4-lh-8hF" secondAttribute="bottom" id="fHY-VJ-ZLz"/>
+                            <constraint firstAttribute="trailing" secondItem="4g4-lh-8hF" secondAttribute="trailing" id="hVP-Dq-dCj"/>
+                            <constraint firstItem="4g4-lh-8hF" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="wEd-os-ArX"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Weather!" id="5kE-Gj-TRH">
                         <barButtonItem key="leftBarButtonItem" systemItem="edit" id="JdF-4K-dM2"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Gb5-Yz-flQ"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Gb5-Yz-flQ">
+                            <connections>
+                                <action selector="addCityButtonPressed:" destination="BYZ-38-t0r" id="Hlx-Dr-O2R"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="4g4-lh-8hF" id="0Gc-Js-rS9"/>
                         <outlet property="searchDisplayController" destination="2Au-fi-leT" id="RON-ae-DO3"/>
                         <segue destination="pWn-dd-hpf" kind="presentation" id="T11-H0-9L8"/>
+                        <segue destination="Y12-Hs-Gq7" kind="show" identifier="CitySearch" id="zUS-zd-wxf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -137,7 +132,6 @@
                 <searchDisplayController id="2Au-fi-leT">
                     <connections>
                         <outlet property="delegate" destination="BYZ-38-t0r" id="egq-Ky-5Qh"/>
-                        <outlet property="searchBar" destination="ODq-sQ-1zQ" id="oFO-KF-u5n"/>
                         <outlet property="searchContentsController" destination="BYZ-38-t0r" id="1Cj-n8-usp"/>
                         <outlet property="searchResultsDataSource" destination="BYZ-38-t0r" id="dOw-Fo-kaq"/>
                         <outlet property="searchResultsDelegate" destination="BYZ-38-t0r" id="2Bp-97-eKQ"/>
@@ -145,6 +139,49 @@
                 </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="8.8000000000000007" y="34.632683658170919"/>
+        </scene>
+        <!--City SearchVC-->
+        <scene sceneID="h7f-CL-I9c">
+            <objects>
+                <viewController id="Y12-Hs-Gq7" customClass="CitySearchVC" customModule="SimpleWeather_" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Omz-C7-VS8"/>
+                        <viewControllerLayoutGuide type="bottom" id="buF-2i-g6B"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3ir-n1-ESy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" placeholder="Search for a city" translatesAutoresizingMaskIntoConstraints="NO" id="XnY-XH-rdY">
+                                <rect key="frame" x="0.0" y="64" width="375" height="44"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                            </searchBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RLs-l2-pdz">
+                                <rect key="frame" x="0.0" y="108" width="375" height="559"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="XnY-XH-rdY" firstAttribute="leading" secondItem="3ir-n1-ESy" secondAttribute="leading" id="6iW-hC-VkZ"/>
+                            <constraint firstItem="RLs-l2-pdz" firstAttribute="top" secondItem="XnY-XH-rdY" secondAttribute="bottom" id="APJ-aY-liu"/>
+                            <constraint firstItem="XnY-XH-rdY" firstAttribute="top" secondItem="Omz-C7-VS8" secondAttribute="bottom" id="E3d-zC-deJ"/>
+                            <constraint firstAttribute="trailing" secondItem="XnY-XH-rdY" secondAttribute="trailing" id="Rje-69-AxN"/>
+                            <constraint firstAttribute="trailing" secondItem="RLs-l2-pdz" secondAttribute="trailing" id="ggc-dc-fN1"/>
+                            <constraint firstItem="buF-2i-g6B" firstAttribute="top" secondItem="RLs-l2-pdz" secondAttribute="bottom" id="kfE-5G-Geo"/>
+                            <constraint firstItem="RLs-l2-pdz" firstAttribute="leading" secondItem="3ir-n1-ESy" secondAttribute="leading" id="r8l-Ib-1WD"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="searchBar" destination="XnY-XH-rdY" id="ZL1-dv-Q38"/>
+                        <outlet property="searchResultsTableView" destination="RLs-l2-pdz" id="4O2-Rw-RJW"/>
+                        <segue destination="bpX-AN-vFw" kind="unwind" identifier="NewCity" unwindAction="newCityAddedWithSegue:" id="kcK-ts-0t1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XsR-fk-MUw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="bpX-AN-vFw" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="8.8000000000000007" y="725.48725637181417"/>
         </scene>
         <!--WeatherVC-->
         <scene sceneID="Tyu-G2-fjq">

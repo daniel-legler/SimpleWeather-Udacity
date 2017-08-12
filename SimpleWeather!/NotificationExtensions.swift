@@ -1,0 +1,14 @@
+//
+//  NotificationExtension.swift
+//  SimpleWeather!
+//
+//  Created by Daniel Legler on 8/11/17.
+//  Copyright © 2017 Daniel Legler. All rights reserved.
+//
+
+import Foundation
+
+extension Notification.Name {
+    static let SWDownloadWeatherDone = Notification.Name("SWDownloadWeatherDoneNotification")
+}
+

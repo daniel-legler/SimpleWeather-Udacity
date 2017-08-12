@@ -16,8 +16,8 @@
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
-        <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CurrentWeather" inverseName="location" inverseEntity="CurrentWeather" syncable="YES"/>
-        <relationship name="forecastWeather" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ForecastWeather" inverseName="location" inverseEntity="ForecastWeather" syncable="YES"/>
+        <relationship name="currentWeather" maxCount="1" deletionRule="Cascade" destinationEntity="CurrentWeather" inverseName="location" inverseEntity="CurrentWeather" syncable="YES"/>
+        <relationship name="forecastWeather" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ForecastWeather" inverseName="location" inverseEntity="ForecastWeather" syncable="YES"/>
     </entity>
     <elements>
         <element name="CurrentWeather" positionX="-54" positionY="18" width="128" height="90"/>
