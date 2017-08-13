@@ -25,3 +25,20 @@ extension Double {
         return (self * (9/5) - 459.67).rounded()
     }
 }
+
+extension Date {
+    func dayOfTheWeek ( ) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE"
+        return formatter.string(from: self)
+    }
+    
+    func TodayString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        let currentDate = formatter.string(from: self)
+        return "Today, \(currentDate)"
+
+    }
+}

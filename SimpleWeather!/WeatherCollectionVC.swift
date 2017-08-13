@@ -21,6 +21,8 @@ class WeatherCollectionVC: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshWeather), name: .SWSaveWeatherDone , object: nil)
+        
         refreshWeather()
 
     }
@@ -33,13 +35,21 @@ class WeatherCollectionVC: UIViewController {
         Loading.shared.show(view)
     }
     
-    func refreshWeather() {
+    @IBAction func refreshButton(_ sender: Any) {
+
+        Loading.shared.show(view)
+
+        refreshWeather()
+    }
+    
+    @objc func refreshWeather() {
         
         locations = Library.shared.loadStoredWeather()
         
-        collectionView.reloadData()
-        
-        Loading.shared.hide()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+            Loading.shared.hide()
+        }
 
     }
     
@@ -49,6 +59,17 @@ class WeatherCollectionVC: UIViewController {
 
 extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let weatherDetailVC = segue.destination as? WeatherDetailVC {
+            guard let tappedCell = collectionView.indexPathsForSelectedItems?.first else { return }
+            weatherDetailVC.location = locations[tappedCell.row]
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "WeatherDetail", sender: nil)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeatherCell", for: indexPath) as? WeatherCell else {
@@ -58,10 +79,12 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
         cell.cityName.text = locations[indexPath.row].name ?? "Somewhere"
         
         let weatherType = locations[indexPath.row].current?.type ?? "Unkown"
-        
+
         cell.weatherIcon.image = UIImage(named: weatherType)
         
-        return UICollectionViewCell()
+//        cell.customize()
+        
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -78,7 +101,7 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let space: CGFloat = 3.0
-        let dimension: CGFloat = (UIScreen.main.bounds.width - (2 * space)) / 2.0
+        let dimension: CGFloat = (UIScreen.main.bounds.width - 20 - (2 * space)) / 2.0
         return CGSize(width: dimension, height: dimension + 20)
     }
 }

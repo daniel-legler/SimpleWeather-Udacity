@@ -9,6 +9,6 @@
 import Foundation
 
 extension Notification.Name {
-    static let SWDownloadWeatherDone = Notification.Name("SWDownloadWeatherDoneNotification")
+    static let SWSaveWeatherDone = Notification.Name("SWSaveWeatherDoneNotification")
 }
 

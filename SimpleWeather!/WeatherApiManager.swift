@@ -11,9 +11,9 @@ import Foundation
 enum WeatherType: String {
     case Clear = "Clear"
     case Cloudy = "Cloudy"
-    case RainLight = "RainLight"
-    case PartiallyCloudy = "PartiallyCloudy"
-    case RainHeavy = "RainHeavy"
+    case RainLight = "Light Rain"
+    case PartiallyCloudy = "Partially Cloudy"
+    case RainHeavy = "Heavy Rain"
     case Snow = "Snow"
     case Thunderstorm = "Thunderstorm"
     case Unkown = "Unknown"
@@ -54,7 +54,7 @@ class WeatherApiManager {
         case 300...321: return .RainLight
         case 500...531: return .RainHeavy
         case 600...622: return .Snow
-        case 700...781: return nil // "Atmosphere" conditions, not supported
+        case 700...781: return .Cloudy
         case 800: return .Clear
         case 800...804: return .Cloudy
         case 900...962: return nil // "Extreme" / "Additional" conditions, not supported

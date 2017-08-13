@@ -20,6 +20,12 @@ final class CoreDataManager {
         return ad.persistentContainer.viewContext
     }
     
+    private var locationEntity: NSEntityDescription {
+        
+        return NSEntityDescription.entity(forEntityName: "Location", in: context)!
+
+    }
+    
     func getLocations() -> [LocationModel] {
         
         var locations = [LocationModel]()
@@ -29,7 +35,7 @@ final class CoreDataManager {
             
             locationObjects = try context.fetch(Location.fetchRequest())
             locations = locationObjects.map({ LocationModel(location: $0) })
-            
+
         } catch {
             
             print("Error loading locations: \(error.localizedDescription)")
@@ -40,6 +46,37 @@ final class CoreDataManager {
     
     func saveWeatherAt(location: LocationModel) {
         
+        let locationObject = Location(context: context)
+        
+        locationObject.latitude = location.lat ?? 0
+        locationObject.longitude = location.lon ?? 0
+        locationObject.name = location.name ?? "Somewhere"
+        
+        guard let forecasts = location.forecast else { print("No forecasts in LocationModel"); return }
+        
+        for forecast in forecasts {
+            let forecastObject = ForecastWeather(context: context)
+            forecastObject.date = (forecast.date as NSDate?) ?? NSDate()
+            forecastObject.highTemp = forecast.highTemp ?? 0
+            forecastObject.lowTemp = forecast.lowTemp ?? 0
+            forecastObject.type = forecast.type ?? "Unknown"
+            forecastObject.location = locationObject
+        }
+        
+        guard let current = location.current else { print("No current weather found in LocationModel"); return }
+        let currentWeatherObject = CurrentWeather(context: context)
+        currentWeatherObject.temperature = current.temp ?? 0
+        currentWeatherObject.type = current.type ?? "Unkown"
+        currentWeatherObject.location = locationObject
+        
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        NotificationCenter.default.post(name: .SWSaveWeatherDone , object: self, userInfo: nil)
+
     }
     
     // Private Functions

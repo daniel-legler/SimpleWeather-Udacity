@@ -27,10 +27,12 @@ class Library {
         
         WAM.downloadWeather(lat: coordinate.latitude, lon: coordinate.longitude) { (response: WeatherApiResponse) in
             
+            
             switch response {
                 
-            case .Location(let location):
-                
+            case .Location(var location):
+                print("Weather Finished Downloading For \(city)")
+                location.name = city
                 self.CDM.saveWeatherAt(location: location)
                 
             case .Error(let error):

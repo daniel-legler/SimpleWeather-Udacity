@@ -30,7 +30,12 @@ class LocationManager {
     var locationAuthorizationStatus: Bool = false
     
     func getLocationAuthorization() {
-        
+//        let locationManager = CLLocationManager()
+//        locationManager.delegate = self
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//        locationManager.requestWhenInUseAuthorization()
+//        locationManager.startMonitoringSignificantLocationChanges()
+//
     }
     
     func searchForCity(addressString: String, completion: @escaping(CitySearchResponse) -> () ) {
