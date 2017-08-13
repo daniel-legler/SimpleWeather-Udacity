@@ -67,6 +67,7 @@ class WeatherApiManager {
         
         var location = LocationModel()
         
+        
         downloadCurrentWeather(lat: lat, lon: lon) { (response: WeatherApiResponse) in
             
             switch (response) {

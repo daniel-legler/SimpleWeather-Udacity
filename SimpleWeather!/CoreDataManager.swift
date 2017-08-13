@@ -46,6 +46,9 @@ final class CoreDataManager {
     
     func saveWeatherAt(location: LocationModel) {
         
+        deleteLocation(location)
+        
+        print("Trying to save data for \(location.name!)")
         let locationObject = Location(context: context)
         
         locationObject.latitude = location.lat ?? 0
@@ -71,6 +74,7 @@ final class CoreDataManager {
         
         do {
             try context.save()
+            print("Saved Context")
         } catch {
             print(error.localizedDescription)
         }
@@ -80,6 +84,32 @@ final class CoreDataManager {
     }
     
     // Private Functions
+    
+    private func deleteLocation(_ location: LocationModel) {
+        
+        guard let lat = location.lat, let lon = location.lon else {
+            print("Nothing Deleted")
+            print(location)
+            return
+        }
+        
+        print("Looking up items to delete")
+        do {
+            
+            let locationObjects = try context.fetch(Location.fetchRequest()) as! [Location]
+            
+            for loc in locationObjects {
+                if loc.latitude == lat && loc.longitude == lon {
+                    print("Found location to delete")
+                    context.delete(loc)
+                }
+            }
+            
+        } catch {
+            
+            print("Error loading locations: \(error.localizedDescription)")
+        }
+    }
     
     private func loadLocation(lat: Double, lon: Double) -> Location? {
         

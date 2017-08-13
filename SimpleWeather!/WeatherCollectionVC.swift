@@ -8,12 +8,16 @@
 
 import UIKit
 
+let swColor = UIColor(red: 71/255, green: 96/255, blue: 137/255, alpha: 1)
+let navigationBarTitleAttributes = [NSFontAttributeName: UIFont(name: "Avenir", size: 20)!,
+                                    NSForegroundColorAttributeName: swColor]
+
 
 class WeatherCollectionVC: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
-    
-//    var locations: [Location] = []
+    @IBOutlet weak var toolBar: UIToolbar!
+
     var locations = [LocationModel]()
     
     override func viewDidLoad() {
@@ -21,8 +25,15 @@ class WeatherCollectionVC: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshWeather), name: .SWSaveWeatherDone , object: nil)
+        navigationController?.navigationBar.titleTextAttributes = navigationBarTitleAttributes
+        navigationItem.leftBarButtonItem = editButtonItem
+        editButtonItem.action = #selector(editButton)
+        navigationItem.leftBarButtonItem?.tintColor = swColor
+        toolBar.isHidden = true
         
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshWeather), name: .SWSaveWeatherDone , object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
+
         refreshWeather()
 
     }
@@ -39,26 +50,43 @@ class WeatherCollectionVC: UIViewController {
 
         Loading.shared.show(view)
 
-        refreshWeather()
+        Library.shared.updateAllWeather(locations)
+
     }
     
     @objc func refreshWeather() {
         
-        locations = Library.shared.loadStoredWeather()
+        self.locations = Library.shared.loadStoredWeather()
         
         DispatchQueue.main.async {
             self.collectionView.reloadData()
             Loading.shared.hide()
         }
-
     }
     
+    @objc func noConnection() {
+        
+        let alert = UIAlertController(title: "No Network Connection", message: "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true, completion: {
+            Loading.shared.hide()
+        })
+        
+    }
+    
+    @objc func editButton() {
+        setEditing(!isEditing, animated: true)
+    }
     
 }
 
 
 extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return !isEditing
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let weatherDetailVC = segue.destination as? WeatherDetailVC {
             guard let tappedCell = collectionView.indexPathsForSelectedItems?.first else { return }
@@ -78,13 +106,23 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
         
         cell.cityName.text = locations[indexPath.row].name ?? "Somewhere"
         
+        let temp = locations[indexPath.row].current?.temp ?? 0
+        cell.currentTemp.text = "\(String(Int(temp)))°"
+
         let weatherType = locations[indexPath.row].current?.type ?? "Unkown"
 
         cell.weatherIcon.image = UIImage(named: weatherType)
         
-//        cell.customize()
+        cell.customize()
         
         return cell
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+
+        collectionView.allowsMultipleSelection = editing
+        toolBar.isHidden = !editing
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -92,17 +130,17 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 3
+        return 5
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 3
+        return 5
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let space: CGFloat = 3.0
         let dimension: CGFloat = (UIScreen.main.bounds.width - 20 - (2 * space)) / 2.0
-        return CGSize(width: dimension, height: dimension + 20)
+        return CGSize(width: dimension, height: dimension + 10)
     }
 }
 

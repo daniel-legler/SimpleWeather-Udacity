@@ -10,14 +10,21 @@ import UIKit
 
 class WeatherCell: UICollectionViewCell {
     @IBOutlet weak var weatherIcon: UIImageView!
+    @IBOutlet weak var currentTemp: UILabel!
     @IBOutlet weak var cityName: UILabel!
 }
 
 extension UICollectionViewCell {
     func customize() {
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowRadius = 20.0
-        self.layer.borderWidth = 2.0
-        self.layer.borderColor = UIColor.black.withAlphaComponent(0.2).cgColor
+        clipsToBounds = false
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowRadius = 1.0
+        layer.shadowOpacity = 1.0
+        layer.shadowOffset = CGSize(width: 0, height: 1)
+        layer.masksToBounds = false
+        layer.shadowPath = CGPath(rect: self.bounds, transform: nil)
+
+        
     }
 }
+    

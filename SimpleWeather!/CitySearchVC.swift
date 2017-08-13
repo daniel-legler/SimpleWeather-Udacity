@@ -20,12 +20,18 @@ class CitySearchVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
+
         searchCompleter.delegate = self
         searchBar.delegate = self
         searchResultsTableView.delegate = self
         searchResultsTableView.dataSource = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+//        navigationController?.navigationBar.tintColor = swColor
+//        navigationController?.navigationBar.backgroundColor = swColor
+//        navigationController?.navigationBar.barTintColor = swColor
     }
     
 }
