@@ -71,16 +71,27 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hFj-jj-OBs">
+                                                    <rect key="frame" x="126" y="7" width="22" height="22"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="22" id="KzH-RL-WFM"/>
+                                                        <constraint firstAttribute="width" constant="22" id="lDD-65-7hE"/>
+                                                    </constraints>
+                                                    <color key="tintColor" red="0.27811506390000001" green="0.37729325889999998" blue="0.53735440970000004" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                </button>
                                             </subviews>
                                         </view>
                                         <color key="backgroundColor" red="0.0" green="0.73725490199999999" blue="0.83137254900000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="w8a-fu-MEl" secondAttribute="bottom" constant="5" id="1HC-WC-ghg"/>
+                                            <constraint firstItem="hFj-jj-OBs" firstAttribute="top" secondItem="oa1-wg-J8b" secondAttribute="top" constant="7" id="3AX-hG-h0L"/>
                                             <constraint firstAttribute="trailing" secondItem="w8a-fu-MEl" secondAttribute="trailing" id="7np-jY-fOO"/>
                                             <constraint firstItem="w8a-fu-MEl" firstAttribute="leading" secondItem="oa1-wg-J8b" secondAttribute="leading" id="EoI-8Y-Ewc"/>
                                             <constraint firstItem="XkZ-mS-Zpz" firstAttribute="leading" secondItem="0Lu-UQ-8fr" secondAttribute="trailing" constant="10" id="Lz9-It-3q3"/>
                                             <constraint firstAttribute="trailing" secondItem="XkZ-mS-Zpz" secondAttribute="trailing" constant="10" id="OVS-Z2-yKM"/>
                                             <constraint firstItem="0Lu-UQ-8fr" firstAttribute="top" secondItem="oa1-wg-J8b" secondAttribute="top" constant="20" id="g2h-6m-BMl"/>
+                                            <constraint firstAttribute="trailing" secondItem="hFj-jj-OBs" secondAttribute="trailing" constant="7" id="hIk-s9-OEJ"/>
                                             <constraint firstItem="XkZ-mS-Zpz" firstAttribute="centerY" secondItem="0Lu-UQ-8fr" secondAttribute="centerY" id="kLQ-ZP-Ctc"/>
                                             <constraint firstItem="0Lu-UQ-8fr" firstAttribute="centerY" secondItem="oa1-wg-J8b" secondAttribute="centerY" constant="-10" id="nFZ-l8-viU"/>
                                             <constraint firstItem="0Lu-UQ-8fr" firstAttribute="leading" secondItem="oa1-wg-J8b" secondAttribute="leading" constant="10" id="qID-M9-DaG"/>
@@ -88,21 +99,12 @@
                                         <connections>
                                             <outlet property="cityName" destination="w8a-fu-MEl" id="MSt-m0-qTu"/>
                                             <outlet property="currentTemp" destination="XkZ-mS-Zpz" id="149-KC-TYN"/>
+                                            <outlet property="deleteButton" destination="hFj-jj-OBs" id="Xyv-1v-w5d"/>
                                             <outlet property="weatherIcon" destination="0Lu-UQ-8fr" id="VEH-ub-GHt"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OxF-aD-p1f">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="ZHT-fa-dT8"/>
-                                    <barButtonItem systemItem="trash" id="f6C-oN-Shs">
-                                        <color key="tintColor" red="0.27811506390000001" green="0.37729325889999998" blue="0.53735440970000004" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" red="0.27811506390571594" green="0.37729325890541077" blue="0.53735440969467163" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
@@ -129,9 +131,10 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="addWeatherButton" destination="Gb5-Yz-flQ" id="Ahl-hV-JhP"/>
                         <outlet property="collectionView" destination="4g4-lh-8hF" id="0Gc-Js-rS9"/>
+                        <outlet property="refreshButton" destination="a7t-Qg-c1N" id="myY-Hb-pUI"/>
                         <outlet property="searchDisplayController" destination="2Au-fi-leT" id="RON-ae-DO3"/>
-                        <outlet property="toolBar" destination="OxF-aD-p1f" id="e1f-Rs-vJp"/>
                         <segue destination="pWn-dd-hpf" kind="show" identifier="WeatherDetail" id="T11-H0-9L8"/>
                         <segue destination="Y12-Hs-Gq7" kind="show" identifier="CitySearch" id="zUS-zd-wxf"/>
                     </connections>

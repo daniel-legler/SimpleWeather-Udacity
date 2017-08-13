@@ -83,9 +83,7 @@ final class CoreDataManager {
 
     }
     
-    // Private Functions
-    
-    private func deleteLocation(_ location: LocationModel) {
+    func deleteLocation(_ location: LocationModel) {
         
         guard let lat = location.lat, let lon = location.lon else {
             print("Nothing Deleted")
@@ -110,28 +108,4 @@ final class CoreDataManager {
             print("Error loading locations: \(error.localizedDescription)")
         }
     }
-    
-    private func loadLocation(lat: Double, lon: Double) -> Location? {
-        
-        do {
-            
-            let locationObjects = try context.fetch(Location.fetchRequest()) as? [Location]
-
-            let filteredLocations = locationObjects?.filter({ ($0.latitude == lat && $0.longitude == lon) })
-            
-            guard (filteredLocations?.count)! <= 1 else {
-                fatalError("Found more than one location with same coordinates")
-            }
-            
-            return filteredLocations?.first ?? nil
-            
-        } catch {
-            
-            print("Error loading locations: \(error.localizedDescription)")
-        }
-
-        return nil
-        
-    }
-    
 }

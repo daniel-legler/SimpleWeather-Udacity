@@ -60,8 +60,8 @@ class Library {
         }
     }
     
-    func updateWeatherAt(location: Location) {
-        
+    func deleteWeatherAt(location: LocationModel) {
+        CDM.deleteLocation(location)
     }
     
     

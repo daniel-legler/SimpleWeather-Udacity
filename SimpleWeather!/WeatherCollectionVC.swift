@@ -16,8 +16,10 @@ let navigationBarTitleAttributes = [NSFontAttributeName: UIFont(name: "Avenir", 
 class WeatherCollectionVC: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var toolBar: UIToolbar!
-
+    @IBOutlet weak var refreshButton: UIBarButtonItem!
+    @IBOutlet weak var addWeatherButton: UIBarButtonItem!
+    
+    
     var locations = [LocationModel]()
     
     override func viewDidLoad() {
@@ -29,7 +31,6 @@ class WeatherCollectionVC: UIViewController {
         navigationItem.leftBarButtonItem = editButtonItem
         editButtonItem.action = #selector(editButton)
         navigationItem.leftBarButtonItem?.tintColor = swColor
-        toolBar.isHidden = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshWeather), name: .SWSaveWeatherDone , object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
@@ -78,14 +79,18 @@ class WeatherCollectionVC: UIViewController {
         setEditing(!isEditing, animated: true)
     }
     
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+
+        collectionView.reloadData()
+        refreshButton.isEnabled = !editing
+        addWeatherButton.isEnabled = !editing
+        
+    }
 }
 
 
 extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
-    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        return !isEditing
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let weatherDetailVC = segue.destination as? WeatherDetailVC {
@@ -95,7 +100,9 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "WeatherDetail", sender: nil)
+        if !isEditing {
+            performSegue(withIdentifier: "WeatherDetail", sender: nil)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -104,26 +111,29 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        cell.cityName.text = locations[indexPath.row].name ?? "Somewhere"
-        
         let temp = locations[indexPath.row].current?.temp ?? 0
-        cell.currentTemp.text = "\(String(Int(temp)))°"
-
         let weatherType = locations[indexPath.row].current?.type ?? "Unkown"
 
+        cell.cityName.text = locations[indexPath.row].name ?? "Somewhere"
+        cell.currentTemp.text = "\(String(Int(temp)))°"
         cell.weatherIcon.image = UIImage(named: weatherType)
-        
         cell.customize()
+        
+        cell.deleteButton.isHidden = !isEditing
+        cell.deleteButton.customize()
+        cell.deleteButton.tag = indexPath.row
+        cell.deleteButton.addTarget(self, action: #selector(deleteCellButton(button:)), for: UIControlEvents.touchUpInside)
+        
         
         return cell
     }
     
-    override func setEditing(_ editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-
-        collectionView.allowsMultipleSelection = editing
-        toolBar.isHidden = !editing
+    func deleteCellButton(button: UIButton) {
+        Library.shared.deleteWeatherAt(location: locations[button.tag])
+        locations.remove(at: button.tag)
+        collectionView.reloadData()
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return locations.count
