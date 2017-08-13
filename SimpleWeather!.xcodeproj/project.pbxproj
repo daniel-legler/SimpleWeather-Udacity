@@ -91,10 +91,10 @@
 		74CD43301F3ACA5F004BD368 /* SimpleWeather! */ = {
 			isa = PBXGroup;
 			children = (
-				74B6E8B11F3E67CA00F46B10 /* Extensions */,
 				74CD434A1F3ACD67004BD368 /* Model */,
 				74CD43491F3ACD60004BD368 /* View */,
 				74CD43481F3ACD5E004BD368 /* Controller */,
+				74B6E8B11F3E67CA00F46B10 /* Extensions */,
 				74CD43461F3ACD56004BD368 /* Services */,
 				74CD43311F3ACA5F004BD368 /* AppDelegate.swift */,
 				74CD43351F3ACA5F004BD368 /* Main.storyboard */,

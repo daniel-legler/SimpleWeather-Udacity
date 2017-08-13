@@ -45,7 +45,6 @@ class WeatherDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         
         return WeatherTableViewCell()
         
-        
     }
     
     func updateMainUI () {

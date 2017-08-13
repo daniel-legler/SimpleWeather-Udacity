@@ -23,17 +23,12 @@ class CitySearchVC: UIViewController {
 
         searchCompleter.delegate = self
         searchBar.delegate = self
+        searchBar.becomeFirstResponder()
+        
         searchResultsTableView.delegate = self
         searchResultsTableView.dataSource = self
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        navigationController?.navigationBar.tintColor = swColor
-//        navigationController?.navigationBar.backgroundColor = swColor
-//        navigationController?.navigationBar.barTintColor = swColor
-    }
-    
+        
 }
 
 extension CitySearchVC: UISearchBarDelegate {
