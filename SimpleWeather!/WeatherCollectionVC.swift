@@ -58,22 +58,13 @@ class WeatherCollectionVC: UIViewController {
     @objc func refreshWeather() {
         
         self.locations = Library.shared.loadStoredWeather()
-        
+    
         DispatchQueue.main.async {
             self.collectionView.reloadData()
             Loading.shared.hide()
         }
     }
     
-    @objc func noConnection() {
-        
-        let alert = UIAlertController(title: "No Network Connection", message: "", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true, completion: {
-            Loading.shared.hide()
-        })
-        
-    }
     
     @objc func editButton() {
         setEditing(!isEditing, animated: true)

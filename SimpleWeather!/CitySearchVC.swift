@@ -17,25 +17,39 @@ class CitySearchVC: UIViewController {
     
     @IBOutlet weak var searchResultsTableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var searchActivityView: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
+        
+        hideKeyboardWhenTappedAround()
+        
         searchCompleter.delegate = self
         searchBar.delegate = self
         searchBar.becomeFirstResponder()
-        
+
         searchResultsTableView.delegate = self
         searchResultsTableView.dataSource = self
     }
-        
+    
 }
 
 extension CitySearchVC: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        searchCompleter.queryFragment = searchText
+        if searchText != "" {
+
+            guard connectedToNetwork() else {
+                NotificationCenter.default.post(name: .SWNoNetworkConnection , object: self, userInfo: nil)
+                return
+            }
+        
+            searchActivityView.startAnimating()
+            searchCompleter.queryFragment = searchText
+        }
     }
 }
 
@@ -50,6 +64,7 @@ extension CitySearchVC: MKLocalSearchCompleterDelegate {
         
         searchResults = results
         searchResultsTableView.reloadData()
+        searchActivityView.stopAnimating()
     }
         
 }
@@ -57,14 +72,23 @@ extension CitySearchVC: MKLocalSearchCompleterDelegate {
 extension CitySearchVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        return searchResults.count == 0 ? 1 : searchResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let searchResult = searchResults[indexPath.row]
+        
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
+
+        
+        guard searchResults.count > 0 else {
+            cell.textLabel?.text = "No Search Results"
+            return cell
+        }
+        
+        let searchResult = searchResults[indexPath.row]
         cell.textLabel?.text = searchResult.title
         cell.detailTextLabel?.text = searchResult.subtitle
+        
         return cell
     }
     

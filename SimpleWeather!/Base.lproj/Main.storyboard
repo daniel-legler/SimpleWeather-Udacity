@@ -179,6 +179,9 @@
                                 <rect key="frame" x="0.0" y="108" width="375" height="559"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="hrm-Ui-a8p">
+                                <rect key="frame" x="324" y="76" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -186,12 +189,15 @@
                             <constraint firstItem="RLs-l2-pdz" firstAttribute="top" secondItem="XnY-XH-rdY" secondAttribute="bottom" id="APJ-aY-liu"/>
                             <constraint firstItem="XnY-XH-rdY" firstAttribute="top" secondItem="Omz-C7-VS8" secondAttribute="bottom" id="E3d-zC-deJ"/>
                             <constraint firstAttribute="trailing" secondItem="XnY-XH-rdY" secondAttribute="trailing" id="Rje-69-AxN"/>
+                            <constraint firstItem="hrm-Ui-a8p" firstAttribute="centerY" secondItem="XnY-XH-rdY" secondAttribute="centerY" id="SpF-k5-oim"/>
                             <constraint firstAttribute="trailing" secondItem="RLs-l2-pdz" secondAttribute="trailing" id="ggc-dc-fN1"/>
                             <constraint firstItem="buF-2i-g6B" firstAttribute="top" secondItem="RLs-l2-pdz" secondAttribute="bottom" id="kfE-5G-Geo"/>
                             <constraint firstItem="RLs-l2-pdz" firstAttribute="leading" secondItem="3ir-n1-ESy" secondAttribute="leading" id="r8l-Ib-1WD"/>
+                            <constraint firstItem="hrm-Ui-a8p" firstAttribute="trailing" secondItem="3ir-n1-ESy" secondAttribute="trailingMargin" constant="-15" id="wDy-Zw-inx"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="searchActivityView" destination="hrm-Ui-a8p" id="bnN-gt-b4p"/>
                         <outlet property="searchBar" destination="XnY-XH-rdY" id="ZL1-dv-Q38"/>
                         <outlet property="searchResultsTableView" destination="RLs-l2-pdz" id="4O2-Rw-RJW"/>
                         <segue destination="bpX-AN-vFw" kind="unwind" identifier="NewCity" unwindAction="newCityAddedWithSegue:" id="kcK-ts-0t1"/>
