@@ -26,16 +26,28 @@ class Library {
     func updateAllWeather(_ locations: [LocationModel]) {
         
         if connectedToNetwork() {
+            
+            let group = DispatchGroup()
+            
             for loc in locations {
+                
+                group.enter()
+                
                 guard loc.coordinate() != nil else { print("Coordinate nil"); continue }
-                downloadNewWeather(city: loc.name ?? "Unkown", coordinate: loc.coordinate()!)
+                
+                downloadNewWeather(city: loc.name ?? "Unkown", coordinate: loc.coordinate()!) {
+                    group.leave()
+                }
+                
+                group.wait()
+                
             }
         } else {
             NotificationCenter.default.post(name: .SWNoNetworkConnection , object: self, userInfo: nil)
         }
     }
     
-    func downloadNewWeather(city: String, coordinate: CLLocationCoordinate2D) {
+    func downloadNewWeather(city: String, coordinate: CLLocationCoordinate2D, completion: @escaping ()->()) {
         
         WAM.downloadWeather(lat: coordinate.latitude, lon: coordinate.longitude) { (response: WeatherApiResponse) in
             
@@ -47,15 +59,13 @@ class Library {
                 location.lat = coordinate.latitude
                 location.lon = coordinate.longitude
                 self.CDM.saveWeatherAt(location: location)
-                
+                completion()
             case .Error(let error):
                 print(error.rawValue)
+                completion()
             default:
                 print("Unexpected WeatherAPI Response")
                 break
-                
-                
-                
             }
         }
     }

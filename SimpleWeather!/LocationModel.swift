@@ -47,6 +47,7 @@ struct LocationModel {
         forecast = nil
     }
     
+    
 }
 
 struct CurrentWeatherModel {

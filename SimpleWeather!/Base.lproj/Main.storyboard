@@ -174,10 +174,17 @@
                             <searchBar contentMode="redraw" placeholder="Search for a city" translatesAutoresizingMaskIntoConstraints="NO" id="XnY-XH-rdY">
                                 <rect key="frame" x="0.0" y="64" width="375" height="44"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Y12-Hs-Gq7" id="yGV-GU-7H3"/>
+                                </connections>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RLs-l2-pdz">
                                 <rect key="frame" x="0.0" y="108" width="375" height="559"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="Y12-Hs-Gq7" id="n2I-NF-mZx"/>
+                                    <outlet property="delegate" destination="Y12-Hs-Gq7" id="7av-QE-YDQ"/>
+                                </connections>
                             </tableView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="hrm-Ui-a8p">
                                 <rect key="frame" x="324" y="76" width="20" height="20"/>

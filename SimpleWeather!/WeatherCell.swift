@@ -31,7 +31,6 @@ extension UIButton {
     func customize() {
         self.layer.cornerRadius = 11.0
         self.transform = CGAffineTransform(rotationAngle: CGFloat(.pi / 4.0))
-
     }
 }
     

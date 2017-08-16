@@ -28,15 +28,17 @@ class WeatherCollectionVC: UIViewController {
         collectionView.dataSource = self
         
         navigationController?.navigationBar.titleTextAttributes = navigationBarTitleAttributes
+        navigationController?.navigationBar.tintColor = swColor
+        navigationController?.navigationBar.backgroundColor = swColor
+
         navigationItem.leftBarButtonItem = editButtonItem
         editButtonItem.action = #selector(editButton)
-        navigationItem.leftBarButtonItem?.tintColor = swColor
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshWeather), name: .SWSaveWeatherDone , object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
 
-        refreshWeather()
-
+        initializeWeather()
+        
     }
 
     @IBAction func addCityButtonPressed(_ sender: Any) {
@@ -55,10 +57,24 @@ class WeatherCollectionVC: UIViewController {
 
     }
     
+    func initializeWeather() {
+       
+        locations = Library.shared.loadStoredWeather().sorted(by: { (l1, l2) in
+            return l1.name! < l2.name!
+        })
+
+        if locations.count > 0 && connectedToNetwork() {
+            refreshButton("")
+        }
+        
+    }
+    
     @objc func refreshWeather() {
         
-        self.locations = Library.shared.loadStoredWeather()
-    
+        locations = Library.shared.loadStoredWeather().sorted(by: { (l1, l2) in
+            return l1.name! < l2.name!
+        })
+        
         DispatchQueue.main.async {
             self.collectionView.reloadData()
             Loading.shared.hide()
@@ -129,6 +145,7 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return locations.count
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 5

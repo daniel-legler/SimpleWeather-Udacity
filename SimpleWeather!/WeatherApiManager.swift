@@ -67,6 +67,10 @@ class WeatherApiManager {
         
         var location = LocationModel()
         
+        let group = DispatchGroup()
+        
+        group.enter()
+        group.enter()
         
         downloadCurrentWeather(lat: lat, lon: lon) { (response: WeatherApiResponse) in
             
@@ -80,7 +84,11 @@ class WeatherApiManager {
                 break
             }
             
-            self.downloadWeatherForecast(lat: lat, lon: lon, completion: { (response: WeatherApiResponse) in
+            group.leave()
+            
+        }
+        
+        downloadWeatherForecast(lat: lat, lon: lon, completion: { (response: WeatherApiResponse) in
                 
                 switch (response) {
                 case .ForecastWeather(let forecast):
@@ -91,11 +99,15 @@ class WeatherApiManager {
                 case .CurrentWeather(_), .Location(_):
                     break
                 }
-                
-                completion(.Location(location))
+            
+            group.leave()
 
-            })
+        })
+        
+        group.notify(queue: .global()) {
+            completion(.Location(location))
         }
+        
     }
     
     private func downloadCurrentWeather(lat: Double, lon: Double, completion: @escaping (WeatherApiResponse)->() ) {

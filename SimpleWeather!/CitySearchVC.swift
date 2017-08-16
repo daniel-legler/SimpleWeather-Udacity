@@ -27,11 +27,9 @@ class CitySearchVC: UIViewController {
         hideKeyboardWhenTappedAround()
         
         searchCompleter.delegate = self
-        searchBar.delegate = self
+
         searchBar.becomeFirstResponder()
 
-        searchResultsTableView.delegate = self
-        searchResultsTableView.dataSource = self
     }
     
 }
@@ -51,6 +49,17 @@ extension CitySearchVC: UISearchBarDelegate {
             searchCompleter.queryFragment = searchText
         }
     }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchResults.removeAll()
+        searchResultsTableView.reloadData()
+    }
+    
+    
 }
 
 extension CitySearchVC: MKLocalSearchCompleterDelegate {
@@ -109,7 +118,7 @@ extension CitySearchVC: UITableViewDelegate, UITableViewDataSource {
             let coordinate = response!.mapItems[0].placemark.coordinate
             let city = completion.title.components(separatedBy: ",")[0]
             
-            Library.shared.downloadNewWeather(city: city, coordinate: coordinate)
+            Library.shared.downloadNewWeather(city: city, coordinate: coordinate) {}
             
             self.performSegue(withIdentifier: "NewCity", sender: self)
         }
