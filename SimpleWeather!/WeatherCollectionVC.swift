@@ -34,10 +34,14 @@ class WeatherCollectionVC: UIViewController {
         navigationItem.leftBarButtonItem = editButtonItem
         editButtonItem.action = #selector(editButton)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshWeather), name: .SWSaveWeatherDone , object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadWeatherCollection), name: .SWSaveWeatherDone , object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
-
-        initializeWeather()
+        
+        reloadWeatherCollection()
+        
+        if locations.count > 0 {
+            refreshWeather()
+        }
         
     }
 
@@ -50,26 +54,18 @@ class WeatherCollectionVC: UIViewController {
     }
     
     @IBAction func refreshButton(_ sender: Any) {
-
+        refreshWeather()
+    }
+    
+    func refreshWeather() {
+        
         Loading.shared.show(view)
-
+        
         Library.shared.updateAllWeather(locations)
 
     }
     
-    func initializeWeather() {
-       
-        locations = Library.shared.loadStoredWeather().sorted(by: { (l1, l2) in
-            return l1.name! < l2.name!
-        })
-
-        if locations.count > 0 && connectedToNetwork() {
-            refreshButton("")
-        }
-        
-    }
-    
-    @objc func refreshWeather() {
+    @objc func reloadWeatherCollection() {
         
         locations = Library.shared.loadStoredWeather().sorted(by: { (l1, l2) in
             return l1.name! < l2.name!

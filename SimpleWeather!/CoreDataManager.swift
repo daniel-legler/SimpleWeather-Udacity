@@ -48,7 +48,7 @@ final class CoreDataManager {
         
         deleteLocation(location)
         
-        print("Trying to save data for \(location.name!)")
+//        print("Trying to save data for \(location.name!)")
         let locationObject = Location(context: context)
         
         locationObject.latitude = location.lat ?? 0
@@ -74,13 +74,11 @@ final class CoreDataManager {
         
         do {
             try context.save()
-            print("Saved Context")
+//            print("Saved Context")
         } catch {
             print(error.localizedDescription)
         }
         
-        NotificationCenter.default.post(name: .SWSaveWeatherDone , object: self, userInfo: nil)
-
     }
     
     func deleteLocation(_ location: LocationModel) {
@@ -91,14 +89,14 @@ final class CoreDataManager {
             return
         }
         
-        print("Looking up items to delete")
+//        print("Looking up items to delete")
         do {
             
             let locationObjects = try context.fetch(Location.fetchRequest()) as! [Location]
             
             for loc in locationObjects {
                 if loc.latitude == lat && loc.longitude == lon {
-                    print("Found location to delete")
+//                    print("Found location to delete")
                     context.delete(loc)
                 }
             }

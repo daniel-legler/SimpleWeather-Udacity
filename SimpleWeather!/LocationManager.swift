@@ -9,56 +9,27 @@
 import Foundation
 import CoreLocation
 
-typealias LM = LocationManager
-
-enum CitySearchResponse {
-    case Cities([City])
-    case Error(Error)
-}
-
-struct City {
-    var coordinate: CLLocationCoordinate2D
-    var name: String
-}
-
-class LocationManager {
-    
-    private init() {}
-    static let shared = LM()
-    
+class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     
     var locationAuthorizationStatus: Bool = false
+    let locationManager = CLLocationManager()
     
-    func getLocationAuthorization() {
-//        let locationManager = CLLocationManager()
-//        locationManager.delegate = self
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-//        locationManager.requestWhenInUseAuthorization()
-//        locationManager.startMonitoringSignificantLocationChanges()
-//
-    }
-    
-    func searchForCity(addressString: String, completion: @escaping(CitySearchResponse) -> () ) {
+    var currentLocation: CLLocationCoordinate2D? {
         
-        let geocoder = CLGeocoder()
-        
-        geocoder.geocodeAddressString(addressString) { (placemarks, error) in
-            
-            guard error == nil, placemarks != nil else {
-                completion(.Error(error!))
-                return
-            }
-            
-            var cities = [City]()
-            for placemark in placemarks! {
-                
-                let name = placemark.name!
-                let coord = placemark.location!.coordinate
-                cities.append(City(coordinate: coord, name: name))
-            }
-            
-        }
-    }
+        return locationManager.location?.coordinate
 
+    }
     
+    
+    override init() {
+        super.init()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.startMonitoringSignificantLocationChanges()
+    }
+    
+    
+    func requestAuthorization() {
+        locationManager.requestWhenInUseAuthorization()
+    }
 }

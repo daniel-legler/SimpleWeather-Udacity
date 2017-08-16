@@ -18,7 +18,7 @@ class Library {
     
     private let CDM = CoreDataManager()
     private let WAM = WeatherApiManager()
-
+    private let CLM = CoreLocationManager()
     func loadStoredWeather() -> [LocationModel] {
         return CDM.getLocations()
     }
@@ -42,6 +42,11 @@ class Library {
                 group.wait()
                 
             }
+            
+            group.notify(queue: .global(), execute: {
+                NotificationCenter.default.post(name: .SWSaveWeatherDone , object: self, userInfo: nil)
+            })
+            
         } else {
             NotificationCenter.default.post(name: .SWNoNetworkConnection , object: self, userInfo: nil)
         }
@@ -54,12 +59,15 @@ class Library {
             switch response {
                 
             case .Location(var location):
-                print("Weather Finished Downloading For \(city)")
+                
                 location.name = city
                 location.lat = coordinate.latitude
                 location.lon = coordinate.longitude
+                
                 self.CDM.saveWeatherAt(location: location)
+                
                 completion()
+  
             case .Error(let error):
                 print(error.rawValue)
                 completion()
