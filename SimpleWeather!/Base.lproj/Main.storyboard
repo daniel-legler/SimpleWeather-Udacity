@@ -104,6 +104,10 @@
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="0U7-wm-gRG"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="J6N-Bo-qeY"/>
+                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="0.27811506390571594" green="0.37729325890541077" blue="0.53735440969467163" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

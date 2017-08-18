@@ -54,7 +54,7 @@ class Library {
     
     func downloadNewWeather(city: String, coordinate: CLLocationCoordinate2D, completion: @escaping ()->()) {
         
-        WAM.downloadWeather(lat: coordinate.latitude, lon: coordinate.longitude) { (response: WeatherApiResponse) in
+        WAM.downloadWeather(city: city, lat: coordinate.latitude, lon: coordinate.longitude) { (response: WeatherApiError) in
             
             switch response {
                 

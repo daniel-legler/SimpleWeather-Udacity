@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 let swColor = UIColor(red: 71/255, green: 96/255, blue: 137/255, alpha: 1)
 let navigationBarTitleAttributes = [NSFontAttributeName: UIFont(name: "Avenir", size: 20)!,
@@ -19,13 +20,15 @@ class WeatherCollectionVC: UIViewController {
     @IBOutlet weak var refreshButton: UIBarButtonItem!
     @IBOutlet weak var addWeatherButton: UIBarButtonItem!
     
-    
-    var locations = [LocationModel]()
+    let locations: Results<Location> = {
+        let realm = try! Realm()
+        return realm.objects(Location.self).sorted(byKeyPath: "city", ascending: false)
+    }()
+
+    var token: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.delegate = self
-        collectionView.dataSource = self
         
         navigationController?.navigationBar.titleTextAttributes = navigationBarTitleAttributes
         navigationController?.navigationBar.tintColor = swColor
@@ -34,14 +37,10 @@ class WeatherCollectionVC: UIViewController {
         navigationItem.leftBarButtonItem = editButtonItem
         editButtonItem.action = #selector(editButton)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadWeatherCollection), name: .SWSaveWeatherDone , object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(reloadWeatherCollection), name: .SWSaveWeatherDone , object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
         
         reloadWeatherCollection()
-        
-        if locations.count > 0 {
-            refreshWeather()
-        }
         
     }
 

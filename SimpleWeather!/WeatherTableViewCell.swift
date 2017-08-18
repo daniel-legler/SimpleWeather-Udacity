@@ -20,12 +20,12 @@ class WeatherTableViewCell: UITableViewCell {
     
     @IBOutlet weak var lowTemp: UILabel!
     
-    func configureCell(forecast: ForecastWeatherModel) {
-        lowTemp.text = "\(String(Int(forecast.lowTemp ?? 0)))°"
-        highTemp.text = "\(String(Int(forecast.highTemp ?? 0)))°"
-        weatherType.text = forecast.type ?? "Unkown"
-        dayLabel.text = forecast.date?.dayOfTheWeek() ?? ""
-        weatherIcon.image = UIImage(named: (forecast.type ?? "Unknown"))
+    func configureCell(forecast: ForecastWeather) {
+        lowTemp.text = "\(String(Int(forecast.low)))°"
+        highTemp.text = "\(String(Int(forecast.high)))°"
+        weatherType.text = forecast.type
+        dayLabel.text = forecast.date.dayOfTheWeek()
+        weatherIcon.image = UIImage(named: (forecast.type))
     }
    
 }
