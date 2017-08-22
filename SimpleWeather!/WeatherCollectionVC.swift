@@ -37,10 +37,11 @@ class WeatherCollectionVC: UIViewController {
         navigationItem.leftBarButtonItem = editButtonItem
         editButtonItem.action = #selector(editButton)
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(reloadWeatherCollection), name: .SWSaveWeatherDone , object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
         
-        reloadWeatherCollection()
+        initializeRealm()
+        
+        refreshWeather()
         
     }
 
@@ -60,20 +61,59 @@ class WeatherCollectionVC: UIViewController {
         
         Loading.shared.show(view)
         
-        Library.shared.updateAllWeather(locations)
+        Library.shared.updateAllWeather() { error in
+            switch error {
+            case .DownloadError: alert(title: "Network Error", message: "Couldn't download weather")
+            case .InvalidCoordinates: alert(title: "Network Error", message: "Weather for city unavailable")
+            case .JsonError: alert(title: "Network Error", message: "Weather Server Error")
+            case .RealmError: alert(title: "Error", message: "Couldn't Save Weather")
+            }
+        }
 
     }
-    
-    @objc func reloadWeatherCollection() {
+
+    func initializeRealm() {
         
-        locations = Library.shared.loadStoredWeather().sorted(by: { (l1, l2) in
-            return l1.name! < l2.name!
-        })
-        
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-            Loading.shared.hide()
+        token = locations.addNotificationBlock {[weak self] (changes: RealmCollectionChange) in
+            
+            guard let collectionView = self?.collectionView else { return }
+            
+            switch changes {
+            case .initial:
+                collectionView.reloadData()
+                break
+            case .update(let results, let deletions, let insertions, let modifications):
+                
+                collectionView.performBatchUpdates({
+                    
+                    collectionView.insertItems(at: insertions.map { IndexPath(row: $0, section: 0) })
+                    collectionView.deleteItems(at: deletions.map { IndexPath(row: $0, section: 0) })
+                    
+                    for row in modifications {
+                        
+                        let indexPath = IndexPath(row: row, section: 0)
+                        let location = results[indexPath.row]
+                        
+                        if let cell = collectionView.cellForItem(at: indexPath) as? WeatherCell {
+                            cell.configureWith(location)
+                        } else {
+                            print("cell not found for \(indexPath)")
+                        }
+                    }
+                    
+                }, completion: { (success) in
+                    
+                    Loading.shared.hide()
+                    
+                })
+                
+                break
+            case .error(let error):
+                print(error)
+                break
+            }
         }
+
     }
     
     
@@ -113,16 +153,9 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        let temp = locations[indexPath.row].current?.temp ?? 0
-        let weatherType = locations[indexPath.row].current?.type ?? "Unkown"
-
-        cell.cityName.text = locations[indexPath.row].name ?? "Somewhere"
-        cell.currentTemp.text = "\(String(Int(temp)))°"
-        cell.weatherIcon.image = UIImage(named: weatherType)
-        cell.customize()
+        cell.configureWith(locations[indexPath.row])
         
         cell.deleteButton.isHidden = !isEditing
-        cell.deleteButton.customize()
         cell.deleteButton.tag = indexPath.row
         cell.deleteButton.addTarget(self, action: #selector(deleteCellButton(button:)), for: UIControlEvents.touchUpInside)
         
@@ -131,9 +164,11 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func deleteCellButton(button: UIButton) {
-        Library.shared.deleteWeatherAt(location: locations[button.tag])
-        locations.remove(at: button.tag)
-        collectionView.reloadData()
+        
+        Library.shared.deleteWeatherAt(location: locations[button.tag]) { _ in
+            self.alert(title: "Error", message: "Couldn't Delete Weather")
+        }
+        
     }
     
     

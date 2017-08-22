@@ -13,9 +13,18 @@ class WeatherCell: UICollectionViewCell {
     @IBOutlet weak var currentTemp: UILabel!
     @IBOutlet weak var cityName: UILabel!
     @IBOutlet weak var deleteButton: UIButton!
-}
-
-extension UICollectionViewCell {
+    
+    func configureWith(_ location: Location) {
+        
+        self.cityName.text = location.city 
+        self.currentTemp.text = "\(String(Int(location.current?.temp ?? 0)))°"
+        self.weatherIcon.image = UIImage(named: location.current?.type ?? "Unkown")
+        self.customize()
+        
+        self.deleteButton.customize()
+        
+    }
+    
     func customize() {
         clipsToBounds = false
         layer.shadowColor = UIColor.black.cgColor
@@ -25,6 +34,7 @@ extension UICollectionViewCell {
         layer.masksToBounds = false
         layer.shadowPath = CGPath(rect: self.bounds, transform: nil)
     }
+    
 }
 
 extension UIButton {

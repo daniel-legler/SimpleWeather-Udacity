@@ -18,26 +18,23 @@ class WeatherDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     @IBOutlet weak var weatherTypeLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
-    var location = LocationModel()
-
+    var location: Location?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
         
         updateMainUI()
         
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return location.forecast?.count ?? 0
+        return location?.forecasts.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
         if let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? WeatherTableViewCell {
-            if let forecast = location.forecast?[indexPath.row] {
+            if let forecast = location?.forecasts[indexPath.row] {
                 cell.configureCell(forecast: forecast)
                 return cell
             }
@@ -50,10 +47,10 @@ class WeatherDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     func updateMainUI () {
         
         dateLabel.text = Date().TodayString()
-        tempLabel.text = "\(Int(location.current?.temp ?? 0.0))°"
-        locationLabel.text = location.name ?? "Unkown"
-        weatherTypeLabel.text = location.current?.type ?? "Unkown"
-        weatherImage.image = UIImage(named: (location.current?.type ?? "Unkown"))
+        tempLabel.text = "\(Int(location?.current?.temp ?? 0.0))°"
+        locationLabel.text = location?.city
+        weatherTypeLabel.text = location?.current?.type
+        weatherImage.image = UIImage(named: (location?.current?.type ?? "Unkown"))
         
     }
 }

@@ -17,12 +17,17 @@ extension UIViewController {
     
     @objc func noConnection() {
         
-        let alert = UIAlertController(title: "No Network Connection", message: "", preferredStyle: .alert)
+        alert(title: "No Network Connection", message: "")
+        
+    }
+    
+    func alert(title: String, message: String) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true, completion: {
             Loading.shared.hide()
         })
-        
     }
     
     func hideKeyboardWhenTappedAround() {
@@ -36,5 +41,7 @@ extension UIViewController {
     func dismissKeyboard() {
         view.endEditing(true)
     }
+    
+    
 
 }

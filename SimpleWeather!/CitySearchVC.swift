@@ -118,11 +118,9 @@ extension CitySearchVC: UITableViewDelegate, UITableViewDataSource {
             let coordinate = response!.mapItems[0].placemark.coordinate
             let city = completion.title.components(separatedBy: ",")[0]
             
-            Library.shared.downloadNewWeather(city: city, coordinate: coordinate) {
-                
-                NotificationCenter.default.post(name: .SWSaveWeatherDone , object: self, userInfo: nil)
-
-            }
+            Library.shared.downloadNewWeather(city: city, coordinate: coordinate, completion: { (error) in
+                print(error.rawValue)
+            })
             
             self.performSegue(withIdentifier: "NewCity", sender: self)
         }

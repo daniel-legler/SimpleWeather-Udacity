@@ -12,98 +12,64 @@ import CoreLocation
 import RealmSwift
 
 
-final class CoreDataManager {
+final class RealmManager {
     
-    private let ad = (UIApplication.shared.delegate as! AppDelegate)
+    func save(_ location: Location, completion: @escaping (WeatherApiError)->() ) {
     
-    private var context: NSManagedObjectContext {
-        return ad.persistentContainer.viewContext
-    }
-    
-    private var locationEntity: NSEntityDescription {
-        
-        return NSEntityDescription.entity(forEntityName: "Location", in: context)!
-        
-    }
-    
-    func getLocations() -> [LocationModel] {
-        
-        var locations = [LocationModel]()
-        var locationObjects = [Location]()
-        
         do {
             
-            locationObjects = try context.fetch(Location.fetchRequest())
-            locations = locationObjects.map({ LocationModel(location: $0) })
+            let realm = try Realm()
+            
+            let update: Bool = realm.object(ofType: Location.self, forPrimaryKey: location.city) != nil ? true : false
+            
+            try realm.write {
+                realm.add(location, update: update)
+            }
             
         } catch {
-            
-            print("Error loading locations: \(error.localizedDescription)")
+            completion(.RealmError); print(error.localizedDescription)
         }
-        
-        return locations
+    
     }
     
-    func saveWeatherAt(location: LocationModel) {
-        
-        deleteLocation(location)
-        
-        //        print("Trying to save data for \(location.name!)")
-        let locationObject = Location(context: context)
-        
-        locationObject.latitude = location.lat ?? 0
-        locationObject.longitude = location.lon ?? 0
-        locationObject.name = location.name ?? "Somewhere"
-        
-        guard let forecasts = location.forecast else { print("No forecasts in LocationModel"); return }
-        
-        for forecast in forecasts {
-            let forecastObject = ForecastWeather(context: context)
-            forecastObject.date = (forecast.date as NSDate?) ?? NSDate()
-            forecastObject.highTemp = forecast.highTemp ?? 0
-            forecastObject.lowTemp = forecast.lowTemp ?? 0
-            forecastObject.type = forecast.type ?? "Unknown"
-            forecastObject.location = locationObject
-        }
-        
-        guard let current = location.current else { print("No current weather found in LocationModel"); return }
-        let currentWeatherObject = CurrentWeather(context: context)
-        currentWeatherObject.temperature = current.temp ?? 0
-        currentWeatherObject.type = current.type ?? "Unkown"
-        currentWeatherObject.location = locationObject
-        
-        do {
-            try context.save()
-            //            print("Saved Context")
-        } catch {
-            print(error.localizedDescription)
-        }
-        
-    }
     
-    func deleteLocation(_ location: LocationModel) {
+    func delete(_ location: Location, _ completion: (WeatherApiError)->()) {
         
-        guard let lat = location.lat, let lon = location.lon else {
-            print("Nothing Deleted")
-            print(location)
-            return
-        }
-        
-        //        print("Looking up items to delete")
         do {
             
-            let locationObjects = try context.fetch(Location.fetchRequest()) as! [Location]
+            let realm = try Realm()
             
-            for loc in locationObjects {
-                if loc.latitude == lat && loc.longitude == lon {
-                    //                    print("Found location to delete")
-                    context.delete(loc)
+            if let object = realm.object(ofType: Location.self, forPrimaryKey: location.city) {
+                
+                try realm.write {
+                    realm.delete(object)
                 }
             }
             
         } catch {
-            
-            print("Error loading locations: \(error.localizedDescription)")
+            completion(.RealmError); print(error.localizedDescription)
         }
+
     }
+    
+    func locations(_ completion: @escaping (WeatherApiError)->() ) -> [Location] {
+        
+        do {
+            
+            let realm = try Realm()
+            
+            let locations = Array(realm.objects(Location.self))
+            
+            return locations
+            
+        } catch {
+            completion(.RealmError); print(error.localizedDescription)
+        }
+        
+        return []
+
+    }
+    
+    
+    
 }

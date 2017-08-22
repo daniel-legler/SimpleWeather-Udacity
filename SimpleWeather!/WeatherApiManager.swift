@@ -54,12 +54,12 @@ class WeatherApiManager {
         }
     }
     
-    func downloadWeather(city: String, lat: Double, lon: Double, completion: @escaping(WeatherApiError)->()) {
+    func downloadWeather(city: String, lat: Double, lon: Double, completion: @escaping(Location?, WeatherApiError?)->()) {
         
         guard let currentURL = currentWeatherUrl(lat, lon),
               let forecastURL = forecastUrl(lat, lon) else {
                 
-            completion(.InvalidCoordinates)
+            completion(nil, .InvalidCoordinates)
             return
         }
         
@@ -70,9 +70,9 @@ class WeatherApiManager {
         group.enter(); group.enter()
         
         weatherApiCall(url: currentURL)  {
-            guard $0 == nil, let json = $1 else { completion($0!); return }
+            guard $0 == nil, let json = $1 else { completion(nil, $0!); return }
             
-            guard let current = self.currentWeatherFromJSON(json, completion: { completion($0); return }) else { completion(.JsonError); return }
+            guard let current = self.currentWeatherFromJSON(json, completion: { completion(nil, $0); return }) else { completion(nil, .JsonError); return }
                 
             currentWeather = current
             
@@ -80,23 +80,17 @@ class WeatherApiManager {
         }
         
         weatherApiCall(url: forecastURL) {
-            guard $0 == nil, let json = $1 else { completion($0!); return }
+            guard $0 == nil, let json = $1 else { completion(nil, $0!); return }
 
-            guard let allForecasts = self.forecastsFromJSON(json, completion: { completion($0); return }) else { completion(.JsonError); return }
+            guard let allForecasts = self.forecastsFromJSON(json, completion: { completion(nil, $0); return }) else { completion(nil, .JsonError); return }
             
             forecasts = allForecasts
             
             group.leave()
         }
 
-        group.wait()
-        
-        do {
+        group.notify(queue: DispatchQueue.global()) {
             
-            let realm = try Realm()
-            
-            let update: Bool = realm.object(ofType: Location.self, forPrimaryKey: city) != nil ? true : false
-
             let location = Location()
             location.city = city
             location.lat = lat
@@ -104,14 +98,10 @@ class WeatherApiManager {
             location.current = currentWeather
             location.forecasts.append(objectsIn: forecasts)
             
-            try realm.write {
-                
-                realm.add(location, update: update)
-                
-            }
-        } catch {
-            completion(.RealmError)
+            completion(location, nil)
         }
+        
+        
         
         
     }
