@@ -20,7 +20,7 @@ class WeatherCollectionVC: UIViewController {
     @IBOutlet weak var refreshButton: UIBarButtonItem!
     @IBOutlet weak var addWeatherButton: UIBarButtonItem!
     
-    let locations: Results<Location> = {
+    var locations: Results<Location> = {
         let realm = try! Realm()
         return realm.objects(Location.self).sorted(byKeyPath: "city", ascending: false)
     }()
@@ -45,6 +45,12 @@ class WeatherCollectionVC: UIViewController {
         
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        updateUI()
+    }
+    
     @IBAction func addCityButtonPressed(_ sender: Any) {
         performSegue(withIdentifier: "CitySearch", sender: nil)
     }
@@ -69,7 +75,7 @@ class WeatherCollectionVC: UIViewController {
             case .RealmError: alert(title: "Error", message: "Couldn't Save Weather")
             }
         }
-
+        
     }
 
     func initializeRealm() {
@@ -79,35 +85,12 @@ class WeatherCollectionVC: UIViewController {
             guard let collectionView = self?.collectionView else { return }
             
             switch changes {
-            case .initial:
+            case .initial, .update:
+                
                 collectionView.reloadData()
+                Loading.shared.hide()
                 break
-            case .update(let results, let deletions, let insertions, let modifications):
-                
-                collectionView.performBatchUpdates({
-                    
-                    collectionView.insertItems(at: insertions.map { IndexPath(row: $0, section: 0) })
-                    collectionView.deleteItems(at: deletions.map { IndexPath(row: $0, section: 0) })
-                    
-                    for row in modifications {
-                        
-                        let indexPath = IndexPath(row: row, section: 0)
-                        let location = results[indexPath.row]
-                        
-                        if let cell = collectionView.cellForItem(at: indexPath) as? WeatherCell {
-                            cell.configureWith(location)
-                        } else {
-                            print("cell not found for \(indexPath)")
-                        }
-                    }
-                    
-                }, completion: { (success) in
-                    
-                    Loading.shared.hide()
-                    
-                })
-                
-                break
+
             case .error(let error):
                 print(error)
                 break
@@ -127,7 +110,14 @@ class WeatherCollectionVC: UIViewController {
         collectionView.reloadData()
         refreshButton.isEnabled = !editing
         addWeatherButton.isEnabled = !editing
-        
+        updateUI()
+    }
+    
+    func updateUI() {
+        let locationsPresent = locations.count > 0
+        collectionView.isHidden = !locationsPresent
+        refreshButton.isEnabled = locationsPresent
+        editButtonItem.isEnabled = locationsPresent
     }
 }
 

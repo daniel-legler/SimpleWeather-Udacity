@@ -24,6 +24,7 @@ final class RealmManager {
             
             try realm.write {
                 realm.add(location, update: update)
+                
             }
             
         } catch {
@@ -52,7 +53,7 @@ final class RealmManager {
 
     }
     
-    func locations(_ completion: @escaping (WeatherApiError)->() ) -> [Location] {
+    func locations() -> [Location]? {
         
         do {
             
@@ -63,11 +64,10 @@ final class RealmManager {
             return locations
             
         } catch {
-            completion(.RealmError); print(error.localizedDescription)
+            print(error.localizedDescription)
+            return nil
         }
         
-        return []
-
     }
     
     

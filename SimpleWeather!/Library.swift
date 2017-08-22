@@ -19,14 +19,15 @@ class Library {
     private let WAM = WeatherApiManager()
     private let RLM = RealmManager()
     
+    func locations() -> [Location]? {
+        return RLM.locations()
+    }
+    
     func updateAllWeather(_ completion: (WeatherApiError)->() ) {
         
         if connectedToNetwork() {
             
-            let locations = RLM.locations() { error in
-                print(error.rawValue)
-                return
-            }
+            guard let locations = RLM.locations() else { completion(.RealmError); return }
             
             for loc in locations {
                 
