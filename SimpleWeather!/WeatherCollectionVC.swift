@@ -22,7 +22,7 @@ class WeatherCollectionVC: UIViewController {
     
     var locations: Results<Location> = {
         let realm = try! Realm()
-        return realm.objects(Location.self).sorted(byKeyPath: "city", ascending: false)
+        return realm.objects(Location.self).sorted(byKeyPath: "city", ascending: true)
     }()
 
     var token: NotificationToken?
@@ -43,12 +43,6 @@ class WeatherCollectionVC: UIViewController {
         
         refreshWeather()
         
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        updateUI()
     }
     
     @IBAction func addCityButtonPressed(_ sender: Any) {
@@ -88,6 +82,7 @@ class WeatherCollectionVC: UIViewController {
             case .initial, .update:
                 
                 collectionView.reloadData()
+                self?.updateUI()
                 Loading.shared.hide()
                 break
 
@@ -108,13 +103,15 @@ class WeatherCollectionVC: UIViewController {
         super.setEditing(editing, animated: animated)
 
         collectionView.reloadData()
+        
         refreshButton.isEnabled = !editing
         addWeatherButton.isEnabled = !editing
-        updateUI()
+        
     }
     
     func updateUI() {
         let locationsPresent = locations.count > 0
+        if !locationsPresent { setEditing(false, animated: false) }
         collectionView.isHidden = !locationsPresent
         refreshButton.isEnabled = locationsPresent
         editButtonItem.isEnabled = locationsPresent
@@ -158,6 +155,8 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
         Library.shared.deleteWeatherAt(location: locations[button.tag]) { _ in
             self.alert(title: "Error", message: "Couldn't Delete Weather")
         }
+        
+        
         
     }
     

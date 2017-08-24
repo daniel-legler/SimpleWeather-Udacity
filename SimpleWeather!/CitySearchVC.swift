@@ -91,6 +91,7 @@ extension CitySearchVC: UITableViewDelegate, UITableViewDataSource {
         
         guard searchResults.count > 0 else {
             cell.textLabel?.text = "No Search Results"
+            cell.isUserInteractionEnabled = false
             return cell
         }
         
@@ -109,20 +110,23 @@ extension CitySearchVC: UITableViewDelegate, UITableViewDataSource {
         let searchRequest = MKLocalSearchRequest(completion: completion)
         let search = MKLocalSearch(request: searchRequest)
         
-        search.start { (response, error) in
-            
-            guard error == nil else {
-                return
+        DispatchQueue.global(qos: .background).async {
+            search.start { (response, error) in
+                
+                guard error == nil else {
+                    return
+                }
+                
+                let coordinate = response!.mapItems[0].placemark.coordinate
+                let city = completion.title.components(separatedBy: ",")[0]
+                
+                Library.shared.downloadNewWeather(city: city, coordinate: coordinate, completion: { (error) in
+                    print(error.rawValue)
+                })
             }
-            
-            let coordinate = response!.mapItems[0].placemark.coordinate
-            let city = completion.title.components(separatedBy: ",")[0]
-            
-            Library.shared.downloadNewWeather(city: city, coordinate: coordinate, completion: { (error) in
-                print(error.rawValue)
-            })
-            
-            self.performSegue(withIdentifier: "NewCity", sender: self)
         }
+        
+        self.performSegue(withIdentifier: "NewCity", sender: self)
+
     }
 }
