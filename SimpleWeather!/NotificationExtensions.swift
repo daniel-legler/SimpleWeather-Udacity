@@ -12,36 +12,3 @@ extension Notification.Name {
     static let SWSaveWeatherDone = Notification.Name("SWSaveWeatherDoneNotification")
     static let SWNoNetworkConnection = Notification.Name("SWNoNetworkConnectionNotification")
 }
-
-extension UIViewController {
-    
-    @objc func noConnection() {
-        
-        alert(title: "No Network Connection", message: "")
-        
-    }
-    
-    func alert(title: String, message: String) {
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true, completion: {
-            Loading.shared.hide()
-        })
-    }
-    
-    func hideKeyboardWhenTappedAround() {
-        
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-        
-    }
-    
-    func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
-    
-
-}

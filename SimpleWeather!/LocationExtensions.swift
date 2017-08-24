@@ -7,13 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
-
-extension Location {
-    func getCoordinate() -> CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: self.lat, longitude: self.lon)
-    }
-}
 
 extension Double {
     func KelvinToFarenheit() -> Double {

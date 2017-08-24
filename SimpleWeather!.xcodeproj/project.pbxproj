@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7415190E1F4E8FC200AA2230 /* ViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7415190D1F4E8FC200AA2230 /* ViewControllerExtensions.swift */; };
+		741519101F4E904200AA2230 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7415190F1F4E904200AA2230 /* LocationManager.swift */; };
 		743C54851F3D561B00141A0F /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743C54841F3D561B00141A0F /* LocationExtensions.swift */; };
 		743E06AA1F44060300D23DAF /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 743E06A81F44060300D23DAF /* Realm.framework */; };
 		743E06AB1F44060300D23DAF /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 743E06A81F44060300D23DAF /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -46,6 +48,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7415190D1F4E8FC200AA2230 /* ViewControllerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerExtensions.swift; sourceTree = "<group>"; };
+		7415190F1F4E904200AA2230 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		743C54841F3D561B00141A0F /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationExtensions.swift; sourceTree = "<group>"; };
 		743E06A81F44060300D23DAF /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Realm.framework; sourceTree = "<group>"; };
 		743E06A91F44060300D23DAF /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
@@ -87,6 +91,7 @@
 			children = (
 				74B6E8B21F3E67EA00F46B10 /* NotificationExtensions.swift */,
 				743C54841F3D561B00141A0F /* LocationExtensions.swift */,
+				7415190D1F4E8FC200AA2230 /* ViewControllerExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -129,6 +134,7 @@
 		74CD43461F3ACD56004BD368 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				7415190F1F4E904200AA2230 /* LocationManager.swift */,
 				74D82C6F1F4BD205002D5F3F /* RealmManager.swift */,
 				74CD43511F3B5F94004BD368 /* Library.swift */,
 				74CD434D1F3ACDE2004BD368 /* WeatherApiManager.swift */,
@@ -261,6 +267,7 @@
 				74B6E8B01F3E674000F46B10 /* Loading.swift in Sources */,
 				74B6E8B71F3FC4CA00F46B10 /* WeatherDetailVC.swift in Sources */,
 				74B6E8B91F3FC67400F46B10 /* WeatherTableViewCell.swift in Sources */,
+				741519101F4E904200AA2230 /* LocationManager.swift in Sources */,
 				74CD43521F3B5F94004BD368 /* Library.swift in Sources */,
 				74D82C701F4BD205002D5F3F /* RealmManager.swift in Sources */,
 				74CD434E1F3ACDE2004BD368 /* WeatherApiManager.swift in Sources */,
@@ -270,6 +277,7 @@
 				74CD43321F3ACA5F004BD368 /* AppDelegate.swift in Sources */,
 				74B6E8BD1F3FE29200F46B10 /* NetworkStatus.swift in Sources */,
 				743E06B31F44175D00D23DAF /* Location.swift in Sources */,
+				7415190E1F4E8FC200AA2230 /* ViewControllerExtensions.swift in Sources */,
 				74B6E8B31F3E67EA00F46B10 /* NotificationExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

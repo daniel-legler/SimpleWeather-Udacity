@@ -1,15 +1,14 @@
 //
-//  WeatherVC.swift
-//  WeatherAppV3
+//  WeatherDetailVC.swift
+//  SimpleWeather!
 //
 //  Created by Daniel Legler on 3/2/17.
 //  Copyright © 2017 Daniel Legler. All rights reserved.
 //
 
 import UIKit
-import CoreLocation
 
-class WeatherDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
+class WeatherDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
@@ -23,7 +22,11 @@ class WeatherDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateMainUI()
+        dateLabel.text = Date().TodayString()
+        tempLabel.text = "\(Int(location?.current?.temp ?? 0.0))°"
+        locationLabel.text = location?.city
+        weatherTypeLabel.text = location?.current?.type
+        weatherImage.image = UIImage(named: (location?.current?.type ?? "Unkown"))
         
     }
     
@@ -33,25 +36,15 @@ class WeatherDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? WeatherTableViewCell {
-            if let forecast = location?.forecasts[indexPath.row] {
-                cell.configureCell(forecast: forecast)
-                return cell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? WeatherTableViewCell,
+            let forecast = location?.forecasts[indexPath.row] else {
+                return WeatherTableViewCell()
             }
-        }
-        
-        return WeatherTableViewCell()
-        
-    }
     
-    func updateMainUI () {
-        
-        dateLabel.text = Date().TodayString()
-        tempLabel.text = "\(Int(location?.current?.temp ?? 0.0))°"
-        locationLabel.text = location?.city
-        weatherTypeLabel.text = location?.current?.type
-        weatherImage.image = UIImage(named: (location?.current?.type ?? "Unkown"))
-        
+        cell.configureCell(forecast: forecast)
+    
+        return cell
+    
     }
 }
 

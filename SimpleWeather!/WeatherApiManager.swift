@@ -54,7 +54,7 @@ class WeatherApiManager {
         }
     }
     
-    func downloadWeather(city: String, lat: Double, lon: Double, completion: @escaping(Location?, WeatherApiError?)->()) {
+    func downloadWeather(city: String, lat: Double, lon: Double, isCurrentLocation: Bool = false, completion: @escaping(Location?, WeatherApiError?)->()) {
         
         guard let currentURL = currentWeatherUrl(lat, lon),
               let forecastURL = forecastUrl(lat, lon) else {
@@ -67,7 +67,9 @@ class WeatherApiManager {
         var forecasts = [ForecastWeather]()
         
         let group = DispatchGroup()
-        group.enter(); group.enter()
+        group.enter() // API Call: Current Weather
+        group.enter() // API Call: Forecast Weather
+        
         
         weatherApiCall(url: currentURL)  {
             guard $0 == nil, let json = $1 else { completion(nil, $0!); return }
@@ -89,12 +91,14 @@ class WeatherApiManager {
             group.leave()
         }
 
+        // When finished downloading, return the Location via the completion handler
         group.notify(queue: DispatchQueue.global()) {
             
             let location = Location()
             location.city = city
             location.lat = lat
             location.lon = lon
+            location.isCurrentLocation = isCurrentLocation
             location.current = currentWeather
             location.forecasts.append(objectsIn: forecasts)
             

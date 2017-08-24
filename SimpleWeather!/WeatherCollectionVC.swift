@@ -30,11 +30,8 @@ class WeatherCollectionVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.titleTextAttributes = navigationBarTitleAttributes
-        navigationController?.navigationBar.tintColor = swColor
-        navigationController?.navigationBar.backgroundColor = swColor
-
-        navigationItem.leftBarButtonItem = editButtonItem
+        customizeNavigationController()
+        
         editButtonItem.action = #selector(editButton)
         
         NotificationCenter.default.addObserver(self, selector: #selector(noConnection), name: .SWNoNetworkConnection , object: nil)
@@ -43,6 +40,7 @@ class WeatherCollectionVC: UIViewController {
         
         refreshWeather()
         
+        Library.shared.addLocalWeatherIfAvailable()
     }
     
     @IBAction func addCityButtonPressed(_ sender: Any) {
@@ -79,6 +77,7 @@ class WeatherCollectionVC: UIViewController {
             guard let collectionView = self?.collectionView else { return }
             
             switch changes {
+                
             case .initial, .update:
                 
                 collectionView.reloadData()
@@ -110,11 +109,15 @@ class WeatherCollectionVC: UIViewController {
     }
     
     func updateUI() {
+        
         let locationsPresent = locations.count > 0
+        
         if !locationsPresent { setEditing(false, animated: false) }
+        
         collectionView.isHidden = !locationsPresent
         refreshButton.isEnabled = locationsPresent
         editButtonItem.isEnabled = locationsPresent
+        
     }
 }
 
@@ -146,7 +149,6 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
         cell.deleteButton.tag = indexPath.row
         cell.deleteButton.addTarget(self, action: #selector(deleteCellButton(button:)), for: UIControlEvents.touchUpInside)
         
-        
         return cell
     }
     
@@ -155,9 +157,6 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
         Library.shared.deleteWeatherAt(location: locations[button.tag]) { _ in
             self.alert(title: "Error", message: "Couldn't Delete Weather")
         }
-        
-        
-        
     }
     
     
@@ -180,12 +179,3 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
         return CGSize(width: dimension, height: dimension + 10)
     }
 }
-
-
-
-
-
-
-
-
-

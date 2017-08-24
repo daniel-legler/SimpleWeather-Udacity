@@ -58,8 +58,6 @@ extension CitySearchVC: UISearchBarDelegate {
         searchResults.removeAll()
         searchResultsTableView.reloadData()
     }
-    
-    
 }
 
 extension CitySearchVC: MKLocalSearchCompleterDelegate {
@@ -103,6 +101,7 @@ extension CitySearchVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         tableView.deselectRow(at: indexPath, animated: true)
         
         let completion = searchResults[indexPath.row]

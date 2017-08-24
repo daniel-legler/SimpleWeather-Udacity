@@ -24,13 +24,11 @@ final class RealmManager {
             
             try realm.write {
                 realm.add(location, update: update)
-                
             }
             
         } catch {
             completion(.RealmError); print(error.localizedDescription)
         }
-    
     }
     
     
@@ -69,7 +67,4 @@ final class RealmManager {
         }
         
     }
-    
-    
-    
 }

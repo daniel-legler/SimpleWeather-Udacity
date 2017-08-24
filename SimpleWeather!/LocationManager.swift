@@ -9,27 +9,66 @@
 import Foundation
 import CoreLocation
 
-class CoreLocationManager: NSObject, CLLocationManagerDelegate {
-    
-    var locationAuthorizationStatus: Bool = false
-    let locationManager = CLLocationManager()
-    
-    var currentLocation: CLLocationCoordinate2D? {
-        
-        return locationManager.location?.coordinate
 
-    }
-    
+class CoreLocationManager: NSObject, CLLocationManagerDelegate {
+    // Request location permission
+    // Report location authorization status
+    // Return coordinate of current location
     
     override init() {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.startMonitoringSignificantLocationChanges()
-    }
-    
-    
-    func requestAuthorization() {
+        
         locationManager.requestWhenInUseAuthorization()
+
     }
+    
+    
+    let locationManager = CLLocationManager()
+    
+    var authStatus: Bool {
+        if CLLocationManager.locationServicesEnabled() {
+            switch CLLocationManager.authorizationStatus() {
+            case .authorizedAlways,.authorizedWhenInUse:
+                return true
+            default:
+                return false
+            }
+        } else {
+            return false
+        }
+        
+    }
+    
+    var coordinate: CLLocationCoordinate2D? {
+        return locationManager.location?.coordinate
+    }
+    
+    func city(completion: @escaping (String?)->Void ) {
+        
+        guard let location = locationManager.location else {
+            completion(nil)
+            return
+        }
+        
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
+            
+            guard let placemark = placemarks?[0],
+                  let city      = placemark.addressDictionary!["City"] as? String else {
+                    completion(nil)
+                    return
+            }
+            
+            completion(city)
+        }
+        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
+            Library.shared.addLocalWeatherIfAvailable()
+        }
+    }
+
 }
