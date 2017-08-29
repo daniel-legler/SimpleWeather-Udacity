@@ -21,7 +21,7 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
         locationManager.requestWhenInUseAuthorization()
-
+        locationManager.startUpdatingLocation()
     }
     
     
@@ -45,15 +45,16 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
         return locationManager.location?.coordinate
     }
     
-    func city(completion: @escaping (String?)->Void ) {
+    func findCity(completion: @escaping (String?)->Void ) {
         
         guard let location = locationManager.location else {
+            print("Location Unavailable")
             completion(nil)
             return
         }
         
         CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-            
+
             guard let placemark = placemarks?[0],
                   let city      = placemark.addressDictionary!["City"] as? String else {
                     completion(nil)

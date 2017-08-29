@@ -14,6 +14,8 @@ import RealmSwift
 
 final class RealmManager {
     
+    // TODO: Need to prevent current location from overwriting already saved city, and vice versa.
+    
     func save(_ location: Location, completion: @escaping (WeatherApiError)->() ) {
     
         do {
@@ -65,6 +67,55 @@ final class RealmManager {
             print(error.localizedDescription)
             return nil
         }
+    }
+    
+    func updateCurrentLocation(city: String, completion: @escaping ()->() ) {
         
+        do {
+            
+            let realm = try Realm()
+            
+            // If the current device location already exists in Realm
+            if let object = realm.object(ofType: Location.self, forPrimaryKey: city) {
+                
+                // Update the location object to be the current location
+                try realm.write {
+                    object.isCurrentLocation = true
+                    completion()
+                }
+                
+            } else {
+                
+                // Otherwise, we need to remove the Location that Realm has saved as the current device location
+                self.removeCurrentLocation {
+                    completion()
+                }
+            }
+            
+        } catch {
+            print(error.localizedDescription)
+            completion()
+        }
+        
+    }
+    
+    
+    func removeCurrentLocation(completion: @escaping ()->()) {
+        
+        do {
+            
+            let realm = try Realm()
+            
+            let locations = Array(realm.objects(Location.self).filter("isCurrentLocation == true"))
+            
+            guard let currentLocation = locations.first else { completion(); return }
+            
+            delete(currentLocation, { _ in })
+            
+            completion()
+            
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }

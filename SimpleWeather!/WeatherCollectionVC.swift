@@ -22,7 +22,11 @@ class WeatherCollectionVC: UIViewController {
     
     var locations: Results<Location> = {
         let realm = try! Realm()
-        return realm.objects(Location.self).sorted(byKeyPath: "city", ascending: true)
+        
+        let sortProperties = [SortDescriptor(keyPath: "isCurrentLocation", ascending: false), SortDescriptor(keyPath: "city", ascending: true)]
+        
+        return realm.objects(Location.self).sorted(by: sortProperties)
+        
     }()
 
     var token: NotificationToken?
@@ -81,8 +85,11 @@ class WeatherCollectionVC: UIViewController {
             case .initial, .update:
                 
                 collectionView.reloadData()
+                
                 self?.updateUI()
+                
                 Loading.shared.hide()
+                
                 break
 
             case .error(let error):
@@ -104,6 +111,7 @@ class WeatherCollectionVC: UIViewController {
         collectionView.reloadData()
         
         refreshButton.isEnabled = !editing
+        
         addWeatherButton.isEnabled = !editing
         
     }
@@ -112,8 +120,10 @@ class WeatherCollectionVC: UIViewController {
         
         let locationsPresent = locations.count > 0
         
-        if !locationsPresent { setEditing(false, animated: false) }
-        
+        if !locationsPresent {
+            setEditing(false, animated: false)
+        }
+    
         collectionView.isHidden = !locationsPresent
         refreshButton.isEnabled = locationsPresent
         editButtonItem.isEnabled = locationsPresent
@@ -145,7 +155,7 @@ extension WeatherCollectionVC: UICollectionViewDelegate, UICollectionViewDataSou
         
         cell.configureWith(locations[indexPath.row])
         
-        cell.deleteButton.isHidden = !isEditing
+        cell.deleteButton.isHidden = (!isEditing) || (cell.location.isCurrentLocation)
         cell.deleteButton.tag = indexPath.row
         cell.deleteButton.addTarget(self, action: #selector(deleteCellButton(button:)), for: UIControlEvents.touchUpInside)
         

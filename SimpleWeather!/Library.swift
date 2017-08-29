@@ -25,16 +25,23 @@ class Library {
     }
     
     func addLocalWeatherIfAvailable() {
-        if CLM.authStatus {
-            
-            CLM.city(completion: { (city) in
-                
-                guard   let city = city,
-                        let coordinate = self.CLM.coordinate else { return }
-                
-                self.downloadNewWeather(city: city, coordinate: coordinate, isCurrentLocation: true, completion: { _ in })
-            })
+        
+        guard CLM.authStatus else {
+            return
         }
+        
+        CLM.findCity(completion: { (city) in
+            
+            guard   let city = city,
+                    let coordinate = self.CLM.coordinate else { return }
+            
+            self.RLM.updateCurrentLocation(city: city) {
+            
+                self.downloadNewWeather(city: city, coordinate: coordinate, isCurrentLocation: true, completion: { _ in })
+                
+            }
+        })
+        
     }
     
     func updateAllWeather(_ completion: (WeatherApiError)->() ) {
@@ -45,9 +52,13 @@ class Library {
             
             for loc in locations {
                 
+                if loc.isCurrentLocation { continue }
+                
                 downloadNewWeather(city: loc.city, coordinate: loc.getCoordinate()) { _ in }
                 
             }
+            
+            addLocalWeatherIfAvailable()
             
         } else {
             print("No connection")
@@ -56,8 +67,8 @@ class Library {
     }
     
     func downloadNewWeather(city: String, coordinate: CLLocationCoordinate2D, isCurrentLocation: Bool = false, completion: @escaping (WeatherApiError)->()) {
-        
-        WAM.downloadWeather(city: city, lat: coordinate.latitude, lon: coordinate.longitude, isCurrentLocation: true) { (location, error) in
+                
+        WAM.downloadWeather(city: city, lat: coordinate.latitude, lon: coordinate.longitude, isCurrentLocation: isCurrentLocation) { (location, error) in
             
             guard error == nil else { completion(error!); return }
             

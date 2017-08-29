@@ -18,7 +18,7 @@ class Loading {
     private var activity: UIActivityIndicatorView
     
     private let loadingView = UIView(frame: UIScreen.main.bounds)
-    
+        
     func show(_ view: UIView) {
         
         loadingView.backgroundColor = UIColor(white: 0, alpha: 0.5)
