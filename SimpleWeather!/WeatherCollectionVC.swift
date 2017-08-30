@@ -44,7 +44,6 @@ class WeatherCollectionVC: UIViewController {
         
         refreshWeather()
         
-        Library.shared.addLocalWeatherIfAvailable()
     }
     
     @IBAction func addCityButtonPressed(_ sender: Any) {

@@ -11,9 +11,15 @@ import CoreLocation
 
 // This class is the interface between the UI and Realm/Networking classes
 // Implementation of the facade design pattern.
-class Library {
+final class Library {
     
-    private init() {}
+    // Download new weather for a city
+    // Delete weather for a city
+    // Update all weather
+    
+    private init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(addLocalWeatherIfAvailable) , name: .SWLocationAvailable, object: nil)
+    }
     static let shared = Library()
     
     private let WAM = WeatherApiManager()
@@ -24,41 +30,22 @@ class Library {
         return RLM.locations()
     }
     
-    func addLocalWeatherIfAvailable() {
-        
-        guard CLM.authStatus else {
-            return
-        }
-        
-        CLM.findCity(completion: { (city) in
-            
-            guard   let city = city,
-                    let coordinate = self.CLM.coordinate else { return }
-            
-            self.RLM.updateCurrentLocation(city: city) {
-            
-                self.downloadNewWeather(city: city, coordinate: coordinate, isCurrentLocation: true, completion: { _ in })
-                
-            }
-        })
-        
-    }
     
     func updateAllWeather(_ completion: (WeatherApiError)->() ) {
         
         if connectedToNetwork() {
             
-            guard let locations = RLM.locations() else { completion(.RealmError); return }
+            addLocalWeatherIfAvailable()
             
+            guard let locations = RLM.locations() else { completion(.RealmError); return }
+
             for loc in locations {
                 
                 if loc.isCurrentLocation { continue }
                 
-                downloadNewWeather(city: loc.city, coordinate: loc.getCoordinate()) { _ in }
+                downloadWeather(city: loc.city, coordinate: loc.getCoordinate(), flags: flags(isCurrentLocation: false, isCustomLocation: true) ) { _ in }
                 
             }
-            
-            addLocalWeatherIfAvailable()
             
         } else {
             print("No connection")
@@ -66,9 +53,9 @@ class Library {
         }
     }
     
-    func downloadNewWeather(city: String, coordinate: CLLocationCoordinate2D, isCurrentLocation: Bool = false, completion: @escaping (WeatherApiError)->()) {
-                
-        WAM.downloadWeather(city: city, lat: coordinate.latitude, lon: coordinate.longitude, isCurrentLocation: isCurrentLocation) { (location, error) in
+    func downloadWeather(city: String, coordinate: CLLocationCoordinate2D, flags: flags, completion: @escaping (WeatherApiError)->()) {
+        
+        WAM.downloadWeather(city: city, lat: coordinate.latitude, lon: coordinate.longitude, flags: flags) { (location, error) in
             
             guard error == nil else { completion(error!); return }
             
@@ -80,15 +67,35 @@ class Library {
         
     }
     
+    // Delete Weather
+    
     func deleteWeatherAt(location: Location, completion: @escaping (WeatherApiError)->()) {
         RLM.delete(location) { error in
             completion(error)
         }
     }
     
+    // Download weather for current location
     
-    
-    
-    
-    
+    @objc fileprivate func addLocalWeatherIfAvailable() {
+        
+        guard CLM.authStatus else {
+            print("Location Auth Status Denied")
+            return
+        }
+        
+        CLM.findCity(completion: { (city) in
+            
+            guard   let city = city,
+                let coordinate = self.CLM.coordinate else { return }
+            
+            self.RLM.updateCurrentLocation(city: city) { wasCustomLocation in
+                
+                self.downloadWeather(city: city, coordinate: coordinate, flags: flags(isCurrentLocation: true, isCustomLocation: wasCustomLocation), completion: { _ in })
+                
+            }
+        })
+        
+    }
+
 }

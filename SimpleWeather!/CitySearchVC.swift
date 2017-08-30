@@ -119,7 +119,7 @@ extension CitySearchVC: UITableViewDelegate, UITableViewDataSource {
                 let coordinate = response!.mapItems[0].placemark.coordinate
                 let city = completion.title.components(separatedBy: ",")[0]
                 
-                Library.shared.downloadNewWeather(city: city, coordinate: coordinate, completion: { (error) in
+                Library.shared.downloadWeather(city: city, coordinate: coordinate, flags: flags(isCurrentLocation: false, isCustomLocation: true), completion: { (error) in
                     print(error.rawValue)
                 })
             }

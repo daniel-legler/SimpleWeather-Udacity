@@ -27,6 +27,8 @@ enum WeatherApiError: String {
     case RealmError = "Error Saving Weather"
 }
 
+typealias flags = (isCurrentLocation: Bool, isCustomLocation: Bool)
+
 class WeatherApiManager {
     
     private func forecastUrl(_ lat: Double, _ lon: Double) -> URL? {
@@ -54,7 +56,7 @@ class WeatherApiManager {
         }
     }
     
-    func downloadWeather(city: String, lat: Double, lon: Double, isCurrentLocation: Bool = false, completion: @escaping(Location?, WeatherApiError?)->()) {
+    func downloadWeather(city: String, lat: Double, lon: Double, flags: flags, completion: @escaping(Location?, WeatherApiError?)->()) {
         
         guard let currentURL = currentWeatherUrl(lat, lon),
               let forecastURL = forecastUrl(lat, lon) else {
@@ -98,7 +100,8 @@ class WeatherApiManager {
             location.city = city
             location.lat = lat
             location.lon = lon
-            location.isCurrentLocation = isCurrentLocation
+            location.isCurrentLocation = flags.isCurrentLocation
+            location.isCustomLocation = flags.isCustomLocation
             location.current = currentWeather
             location.forecasts.append(objectsIn: forecasts)
             

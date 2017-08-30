@@ -17,10 +17,13 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     
     override init() {
         super.init()
+        
         locationManager.delegate = self
+        
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
         locationManager.requestWhenInUseAuthorization()
+        
         locationManager.startUpdatingLocation()
     }
     
@@ -57,6 +60,7 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
 
             guard let placemark = placemarks?[0],
                   let city      = placemark.addressDictionary!["City"] as? String else {
+                    print("Unable to geocode coordinates")
                     completion(nil)
                     return
             }
@@ -68,7 +72,7 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
-            Library.shared.addLocalWeatherIfAvailable()
+            NotificationCenter.default.post(name: .SWLocationAvailable, object: nil)
         }
     }
 

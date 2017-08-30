@@ -11,4 +11,5 @@ import UIKit
 extension Notification.Name {
     static let SWSaveWeatherDone = Notification.Name("SWSaveWeatherDoneNotification")
     static let SWNoNetworkConnection = Notification.Name("SWNoNetworkConnectionNotification")
+    static let SWLocationAvailable = Notification.Name("SWLocationAvailableNotification")
 }

@@ -16,6 +16,7 @@ class Location: Object {
     dynamic var lat: Double = 0.0
     dynamic var lon: Double = 0.0
     dynamic var isCurrentLocation: Bool = false
+    dynamic var isCustomLocation: Bool = false
     
     dynamic var current: CurrentWeather?
     let forecasts = List<ForecastWeather>()
