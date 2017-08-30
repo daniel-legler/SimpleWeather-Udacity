@@ -13,9 +13,7 @@ import RealmSwift
 
 
 final class RealmManager {
-    
-    // TODO: Need to prevent current location from overwriting already saved city
-    
+        
     var currentCity: String? {
         
         do {
